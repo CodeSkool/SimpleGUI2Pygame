@@ -48,6 +48,7 @@ class PgxtraWidget(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.screen = screen
         self.label = label
+        self.default_label = label
         self.text_color = text_color
         self.bg_color = bg_color
         self.location = location
@@ -92,6 +93,9 @@ class PgxtraWidget(pygame.sprite.Sprite):
 
     def get_label(self):
         return self.label
+
+    def get_default_label(self):
+        return self.default_label
 
     def change_label(self, new_label):
         if self.len_cap:
@@ -142,29 +146,32 @@ class InputField(PgxtraWidget):
                 surface_rect = self.get_surface_rect()
                 if surface_rect.collidepoint(pos):
                     self.click_press()
-                    self.response = ""
+                    response = ""
             elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:
                 pos = pygame.mouse.get_pos()
                 surface_rect = self.get_surface_rect()
                 if surface_rect.collidepoint(pos):
                     self.click_release()
 
+            label = self.get_label()
+            default_label = self.get_default_label()
+            response = label[:]
             if event.type == pygame.KEYDOWN:
+                if label == default_label:
+                    self.change_label('')
+
                 if event.key in LEGAL_KEYS:
-                    self.response += LEGAL_KEYS[event.key]
+                    response += LEGAL_KEYS[event.key]
 
                 elif event.key == pygame.K_BACKSPACE:
-                    self.response = self.response[:-1]
+                    response = response[:-1]
 
                 elif event.key == pygame.K_RETURN:
                     self.call()
-                    self.disable()
+                    #self.disable()
 
-                label = self.get_label()
-                if label != self.response:
-                    self.change_label(self.response)
-                else:
-                    self.response = ""
+                if label != response:
+                    self.change_label(response)
 
 
 def print_name(obj):
