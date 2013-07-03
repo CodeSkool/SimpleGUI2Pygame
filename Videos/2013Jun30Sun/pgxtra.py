@@ -159,6 +159,7 @@ class InputField(PgxtraWidget):
             if event.type == pygame.KEYDOWN:
                 if label == default_label:
                     self.change_label('')
+                    response = self.label[:]
 
                 if event.key in LEGAL_KEYS:
                     response += LEGAL_KEYS[event.key]
