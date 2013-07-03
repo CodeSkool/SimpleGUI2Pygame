@@ -1,0 +1,13 @@
+(lp0
+S'an insect'
+p1
+a(dp2
+I00
+(lp3
+S'human'
+p4
+aNasI01
+(lp5
+S'a gnat'
+p6
+aNasa.
