@@ -1,7 +1,7 @@
 # 20 Questions - Pygame version
 
 import pygame
-import os, sys, pickle
+import sys, pickle
 import pgxtra
 
 #The default question tree
@@ -37,10 +37,11 @@ class FileHelper:
         file.close()
 
 class UI:
+    jules_colors = {"light_blue":0xE5E6FFAA, "blue":0x0006AC55}
     def __init__(self, target, title="", width=640,
                  height=480, font=20,
-                 bg_color="black",
-                 fg_color="white"):
+                 bg_color=jules_colors["light_blue"],
+                 fg_color=jules_colors["blue"]):
         self.target = target
         self.title = title
         self.width = width
@@ -60,7 +61,6 @@ class UI:
 
     def start(self):
         self.target.my_setup(self.screen)
-        self.surface.blit(self.screen, (0,0))
 
         while True:
             self.screen.fill(pygame.Color(self.bg_color))
@@ -91,23 +91,24 @@ class UI:
         pygame.quit()
         sys.exit()
 
-    def draw_text(self, screen, text, location):
+    def draw_text(self, screen, text, location=None):
         if pygame.font:
             font = pygame.font.Font(None, self.font)
             text = font.render(text, 1, pygame.Color(self.fg_color))
             textpos = text.get_rect()
-            textpos.centerx = location[0]
-            textpos.centery = location[1]
+            if location == None:
+                location = (10, 10)
+            textpos.x = location[0]
+            textpos.y = location[1]
             screen.blit(text, textpos)
 
     def add_input(self, screen, text, handler, location=None, size=None):
         if location == None:
-            location = (50, 50)
+            location = (10, 10)
         if size == None:
-            size = (200, 50)
+            size = (100, 25)
         textinput = pgxtra.InputField(screen, text, self.bg_color, self.fg_color, location, size, handler, self.font)
         textinput.enabled = True
-        textinput.draw()
         self.textinputs.append(textinput)
 
     def add_label(self, screen, text, location=None):
@@ -115,17 +116,16 @@ class UI:
 
     def add_button(self, screen, text, handler, location=None, size=None):
         if location == None:
-            location = (50, 50)
+            location = (10, 10)
         if size == None:
-            size = (50, 50)
+            size = (100, 25)
         button = pgxtra.Button(screen, text, self.bg_color, self.fg_color, location, size, handler, self.font)
         button.enabled = True
-        button.draw()
         self.buttons.append(button)
 
 class State:
     def __init__(self):
-        self.ui = UI(self, "20 Questions")
+        self.ui = UI(self, "20 Questions", width=300, height=200)
         self.nextState = None
 
     def start(self):
@@ -134,16 +134,17 @@ class State:
     def quit(self):
         pass
 
-    def my_setup(self, frame):
+    def my_setup(self, screen):
         pass
 
-    def draw(self, canvas):
+    def draw(self, screen):
         pass
 
     def get_next_state(self):
         return self.nextState
 
     def transition(self):
+        self.quit()
         next_state = self.get_next_state()
         if next_state <> None:
             switch_to = next_state()
@@ -163,15 +164,11 @@ class GameStart(State):
     def no(self):
         self.transition()
 
-    def my_setup(self, frame):
-        self.ui.add_button(frame, "Yes", lambda btn: self.yes(),
-                           (50, self.ui.font * 2.5))
-        self.ui.add_button(frame, "No", lambda btn: self.no(),
-                           (110, self.ui.font * 2.5))
-    def draw(self, canvas):
-        self.ui.draw_text(canvas,
-                          self.message,
-                          (150, self.ui.font))
+    def my_setup(self, screen):
+        self.ui.add_button(screen, "Yes", lambda btn: self.yes(), (10, self.ui.font + 15))
+        self.ui.add_button(screen, "No", lambda btn: self.no(), (120, self.ui.font + 15))
+    def draw(self, screen):
+        self.ui.draw_text(screen, self.message)
 
 
 class Playing(State):
@@ -193,15 +190,14 @@ class Playing(State):
             self.next_state_type = lambda: Playing(self.tree[1][False])
         self.transition()
 
-    def my_setup(self, frame):
-        self.ui.add_button(frame, "Yes", lambda btn: self.yes(),
-                           (50, self.ui.font * 2.5))
-        self.ui.add_button(frame, "No", lambda btn: self.no(),
-                           (110, self.ui.font * 2.5))
+    def my_setup(self, screen):
+        self.ui.add_button(screen, "Yes", lambda btn: self.yes(),
+                           (10, self.ui.font + 15))
+        self.ui.add_button(screen, "No", lambda btn: self.no(),
+                           (120, self.ui.font + 15))
 
-    def draw(self, canvas):
-        self.ui.draw_text(canvas, self.get_question(),
-                          (50, self.ui.font))
+    def draw(self, screen):
+        self.ui.draw_text(screen, self.get_question())
 
     def get_question(self):
         return "Is it " + self.tree[0] + "?"
@@ -245,29 +241,23 @@ class Learning(State):
         self.answers.append(text)
         self.learn_next()
 
-    def my_setup(self, frame):
-        left = 200
-        top = self.ui.font
-        width = 200
-        height = 50
-        self.ui.add_input(frame,
+    def my_setup(self, screen):
+        self.ui.add_input(screen,
                           Learning.messages[self.index],
                           lambda text: self.input_text(text),
-                          (left, top * 2.5),
-                          (400, 50),
+                          (10, self.ui.font + 15),
+                          (400, 25),
                           )
 
-    def draw(self, canvas):
+    def draw(self, screen):
         left = 300
         top = self.ui.font
         width = 200
         height = 50
-        self.ui.draw_text(canvas,
-                          Learning.messages[self.index],
-                          location=(left, top))
-        self.ui.add_label(canvas,
+        self.ui.draw_text(screen, Learning.messages[self.index])
+        self.ui.add_label(screen,
                           "(Remember to press enter after typing your answer)",
-                          location=(left, top * 6))
+                          location=(10, 2 * self.ui.font + 20))
 
 class GameOver(State):
     def __init__(self, message):
@@ -282,20 +272,15 @@ class GameOver(State):
     def no(self):
         self.ui.quit()
 
-    def my_setup(self, frame):
-        self.ui.add_button(frame, "Yes", lambda btn: self.yes(),
-                           (50, self.ui.font * 3.5))
-        self.ui.add_button(frame, "No", lambda btn: self.no(),
-                           (110, self.ui.font * 3.5))
+    def my_setup(self, screen):
+        self.ui.add_button(screen, "Yes", lambda btn: self.yes(),
+                           (10, 2 * self.ui.font + 15))
+        self.ui.add_button(screen, "No", lambda btn: self.no(),
+                           (120, 2 * self.ui.font + 15))
 
-
-    def draw(self, canvas):
-        self.ui.draw_text(canvas,
-                          self.message,
-                          (50, self.ui.font))
-        self.ui.draw_text(canvas,
-                          "Play again?",
-                          (50, self.ui.font * 2.5))
+    def draw(self, screen):
+        self.ui.draw_text(screen, self.message)
+        self.ui.draw_text(screen, "Play again?", (10, self.ui.font + 15))
 
 question_tree = ["human", None]
 new_game = GameStart()

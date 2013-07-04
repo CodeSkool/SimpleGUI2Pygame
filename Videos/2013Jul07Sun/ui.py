@@ -3,8 +3,8 @@ import pygame, sys, pgxtra
 class UI:
     def __init__(self, target, title="", width=640,
                  height=480, font=20,
-                 bg_color="black",
-                 fg_color="white"):
+                 bg_color="turquoise",
+                 fg_color="violetred4"):
         """(UI, object, str, int, int, int, str, str) -> NoneType
 
         Initialize a UI object, and pygame."""
@@ -89,8 +89,8 @@ class UI:
             font = pygame.font.Font(None, self.font)
             text = font.render(text, 1, pygame.Color(self.fg_color))
             textpos = text.get_rect()
-            textpos.centerx = location[0]
-            textpos.centery = location[1]
+            textpos.x = location[0]
+            textpos.y = location[1]
             screen.blit(text, textpos)
             return text
 
@@ -103,9 +103,9 @@ class UI:
     def add_input(self, screen, text, handler, location=None, size=None):
         """Add a new InputField to the UI."""
         if location == None:
-            location = (50, 50)
+            location = (10, 10)
         if size == None:
-            size = (200, 50)
+            size = (100, 25)
         textinput = pgxtra.InputField(screen, text, self.bg_color, self.fg_color, location, size, handler, self.font)
         textinput.enabled = True
         self.controls.append(textinput)
@@ -115,9 +115,9 @@ class UI:
     def add_button(self, screen, text, handler, location=None, size=None):
         """Add a new Button to the UI."""
         if location == None:
-            location = (50, 50)
+            location = (10, 10)
         if size == None:
-            size = (50, 50)
+            size = (100, 25)
         button = pgxtra.Button(screen, text, self.bg_color, self.fg_color, location, size, handler, self.font)
         button.enabled = True
         self.controls.append(button)
@@ -134,9 +134,10 @@ def main():
         def __init__(self):
             self.ui = UI(self, "Test Game")
         def update(self, screen):
-            pass
+            self.ui.draw_text(screen, "The quick brown fox jumps over the lazy dog.", location=(10, 75))
         def setup(self, screen):
             self.ui.add_button(screen, "New button", self.button_handler)
+            self.ui.add_input(screen, "New input", self.button_handler, location=(10, 40))
         def handle(self, event):
             pass
         def button_handler(self, btn):

@@ -4,10 +4,37 @@ p1
 a(dp2
 I00
 (lp3
-S'human'
+S'loyal'
 p4
+a(dp5
+I00
+(lp6
+S'human'
+p7
 aNasI01
-(lp5
+(lp8
+S'a dog'
+p9
+aNasasI01
+(lp10
+S'annoying'
+p11
+a(dp12
+I00
+(lp13
 S'a gnat'
-p6
-aNasa.
+p14
+aNasI01
+(lp15
+S'itchy'
+p16
+a(dp17
+I00
+(lp18
+S'a fly'
+p19
+aNasI01
+(lp20
+S'a mosquito'
+p21
+aNasasasa.
