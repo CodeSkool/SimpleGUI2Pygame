@@ -1,13 +1,12 @@
 import pygame, sys, pgxtra
 
 class UI:
+    jules_colors = {"light_blue":0xE5E6FFAA, "blue":0x0006AC55}
     def __init__(self, target, title="", width=640,
                  height=480, font=20,
-                 bg_color="turquoise",
-                 fg_color="violetred4"):
-        """(UI, object, str, int, int, int, str, str) -> NoneType
-
-        Initialize a UI object, and pygame."""
+                 bg_color=jules_colors["light_blue"],
+                 fg_color=jules_colors["blue"]):
+        """Initialize a UI object, and pygame."""
         self.target = target
         self.title = title
         self.width = width
@@ -25,9 +24,7 @@ class UI:
         self.screen = pygame.Surface((self.width, self.height))
 
     def start(self):
-        """(UI) -> NoneType
-
-        Set up the target and run the main game loop
+        """Set up the target and run the main game loop
         (handling events, drawing)."""
         # set up the target
         self.target.setup(self.screen)
@@ -47,9 +44,7 @@ class UI:
 
 
     def handle_events(self):
-        """(UI) -> NoneType
-
-        Check for events and allow them to be handled."""
+        """Check for events and allow them to be handled."""
         for event in pygame.event.get():
             # First, allow the target to handle the event
             self.target.handle(event)
@@ -62,18 +57,14 @@ class UI:
                     control.check_event(event)
 
     def draw(self):
-        """(UI) -> NoneType
-
-        Allow everything to draw itself."""
+        """Allow everything to draw itself."""
         for control in self.controls:
             control.draw()
         self.target.update(self.screen)
         self.surface.blit(self.screen, (0,0))
 
     def quit(self):
-        """(UI) -> NoneType
-
-        Notify the target that we are quiting, then quit."""
+        """Notify the target that we are quiting, then quit."""
         try:
             self.target.quit()
         finally:
@@ -81,8 +72,7 @@ class UI:
             quit()
 
     def draw_text(self, screen, text, location):
-        """(UI, Surface, str, (int, int)) -> Surface
-        Draw the specified text to the screen at the specified location.
+        """Draw the specified text to the screen at the specified location.
         Return the text surface.
         """
         if pygame.font:
@@ -95,8 +85,7 @@ class UI:
             return text
 
     def add_label(self, screen, text, location=None):
-        """(UI, surface, str, (int, int)) -> Surface
-        Draw a label (same as draw_text).
+        """Draw a label (same as draw_text).
         """
         return self.draw_text(screen, text, location)
 
