@@ -19,9 +19,8 @@ class UI:
         pygame.init()
         self.clock = self.fpsClock = pygame.time.Clock()
 
-        self.surface = pygame.display.set_mode((self.width, self.height))
+        self.screen = pygame.display.set_mode((self.width, self.height))
         pygame.display.set_caption(self.title)
-        self.screen = pygame.Surface((self.width, self.height))
 
     def start(self):
         """Set up the target and run the main game loop
@@ -61,7 +60,6 @@ class UI:
         for control in self.controls:
             control.draw()
         self.target.update(self.screen)
-        self.surface.blit(self.screen, (0,0))
 
     def quit(self):
         """Notify the target that we are quiting, then quit."""
@@ -71,10 +69,12 @@ class UI:
             # always quit, even if there are exceptions
             quit()
 
-    def draw_text(self, screen, text, location):
+    def draw_text(self, screen, text, location=None):
         """Draw the specified text to the screen at the specified location.
         Return the text surface.
         """
+        if location == None:
+                location = (10, 10)
         if pygame.font:
             font = pygame.font.Font(None, self.font)
             text = font.render(text, 1, pygame.Color(self.fg_color))
