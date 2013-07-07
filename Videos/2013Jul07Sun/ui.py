@@ -69,18 +69,27 @@ class UI:
             # always quit, even if there are exceptions
             quit()
 
-    def draw_text(self, screen, text, location=None):
+    def draw_text(self, screen, text, location=None, font_size=None, align=-1):
         """Draw the specified text to the screen at the specified location.
         Return the text surface.
         """
+        assert align >= -1 and align <= 1, "align must be -1, 0, or 1"
         if location == None:
-                location = (10, 10)
+            location = (10, 10)
+        if font_size == None:
+            font_size = self.font
         if pygame.font:
-            font = pygame.font.Font(None, self.font)
+            font = pygame.font.Font("Comfortaa-Regular.ttf", font_size)
             text = font.render(text, 1, pygame.Color(self.fg_color))
             textpos = text.get_rect()
-            textpos.x = location[0]
-            textpos.y = location[1]
+
+            if align == -1:
+                textpos.x, textpos.y = location[0], location[1]
+            elif align == 0:
+                textpos.centerx, textpos.centery = location[0], location[1]
+            else:
+                textpos.right, textpos.y = location[0], location[1]
+
             screen.blit(text, textpos)
             return text
 
@@ -89,13 +98,15 @@ class UI:
         """
         return self.draw_text(screen, text, location)
 
-    def add_input(self, screen, text, handler, location=None, size=None):
+    def add_input(self, screen, text, handler, location=None, size=None, font_size=None, len_cap=0):
         """Add a new InputField to the UI."""
         if location == None:
             location = (10, 10)
         if size == None:
             size = (100, 25)
-        textinput = pgxtra.InputField(screen, text, self.bg_color, self.fg_color, location, size, handler, self.font)
+        if font_size == None:
+            font_size = self.font
+        textinput = pgxtra.InputField(screen, text, self.bg_color, self.fg_color, location, size, handler, font_size=font_size, len_cap=len_cap)
         textinput.enabled = True
         self.controls.append(textinput)
         return textinput
@@ -111,6 +122,14 @@ class UI:
         button.enabled = True
         self.controls.append(button)
         return button
+
+    def draw_circle(self, screen, color=None, pos=None, radius=10, width=0):
+        if color == None:
+            color = self.fg_color
+            color = UI.jules_colors["blue"]
+        if pos == None:
+            pos = (radius, radius)
+        return pygame.draw.circle(screen, color, pos, radius, width)
 
 def quit():
     """Stop Pygame and exit the program."""

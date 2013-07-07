@@ -62,6 +62,7 @@ class PgxtraWidget(pygame.sprite.Sprite):
 
         rect = self.image.get_rect()
         self.rect = (rect[0]+location[0], rect[1]+location[1], rect[2], rect[3])
+        self.surface_rect = None
         self.enabled = True
         pygame.mouse.set_visible(True)
 
@@ -115,12 +116,12 @@ class PgxtraWidget(pygame.sprite.Sprite):
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 pos = pygame.mouse.get_pos()
                 surface_rect = self.get_surface_rect()
-                if surface_rect.collidepoint(pos):
+                if surface_rect <> None and surface_rect.collidepoint(pos):
                     self.click_press()
             elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:
                 pos = pygame.mouse.get_pos()
                 surface_rect = self.get_surface_rect()
-                if surface_rect.collidepoint(pos):
+                if surface_rect <> None and surface_rect.collidepoint(pos):
                     self.click_release()
 
 
