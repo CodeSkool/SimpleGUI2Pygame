@@ -289,7 +289,7 @@ class Playing(State):
             self.dot[3] = self.ui.draw_circle(screen, pos=pos, radius=radius, width=width)
             for circle in self.circles:
                 [pos, radius, width, rect] = circle
-                circle[3] = self.ui.draw_circle(screen, pos=pos, radius=radius, width=width)
+                self.ui.draw_circle(screen, pos=pos, radius=radius, width=width)
         finally:
             screen.unlock()
 
