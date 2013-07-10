@@ -114,6 +114,7 @@ class GameStart(State):
         self.count = 3
         self.text = self.prompt
         self.eventid = TimerEvents.GameStart
+
     def start(self):
         self.start_timer()
         State.start(self)
@@ -297,8 +298,9 @@ def main():
     global high_scores
     high_scores = HighScores()
     high_scores.load()
-    ScreenSaver().start()
+    #ScreenSaver().start()
     #Playing().start()
+    GameOver(0).start()
 
 
 
