@@ -2,6 +2,7 @@ import ui
 
 
 class State:
+
     def __init__(self):
         """Create a reference to the UI, and establish the default nextState."""
         self.ui = ui.UI(self, "")
@@ -10,6 +11,7 @@ class State:
     def start(self):
         """Start the UI"""
         self.ui.start()
+        self.ui = None
 
     def quit(self):
         """Perform any cleanup before exiting the current state."""
@@ -35,14 +37,13 @@ class State:
         """Transition to the next state."""
         self.quit()
         next_state = self.get_next_state()
-        assert next_state <> None, "no state specified"
-        switch_to = next_state()
-        switch_to.start()
+        self.ui.transition()
 
 def main():
     do_quit = False
     try:
         s = State()
+        s.start()
         s.transition()
     except Exception as e:
         do_quit = True

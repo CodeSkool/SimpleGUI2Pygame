@@ -21,10 +21,11 @@ import pygame, pygame.event, pygame.time
 import random, itertools, functools
 
 class TimerEvents:
-    ScreenSaver = pygame.USEREVENT + 1
-    GameStart = pygame.USEREVENT + 2
-    Playing = pygame.USEREVENT + 3
-    GameOver = pygame.USEREVENT + 4
+    base_event = 1
+    ScreenSaver = pygame.USEREVENT + base_event + 1
+    GameStart = pygame.USEREVENT + base_event + 2
+    Playing = pygame.USEREVENT + base_event + 3
+    GameOver = pygame.USEREVENT + base_event + 4
     def start(self, eventid, milliseconds=1000):
         pygame.time.set_timer(eventid, int(milliseconds))
     def stop(self, eventid):
@@ -294,13 +295,24 @@ class Playing(State):
         finally:
             screen.unlock()
 
+class Game:
+    def __init__(self):
+        global high_scores
+        high_scores = HighScores()
+        high_scores.load()
+
+    def start(self, init_state):
+        current_state = init_state()
+        while current_state <> None:
+            current_state.start()
+            current_state = current_state.get_next_state()()
+
+
 def main():
-    global high_scores
-    high_scores = HighScores()
-    high_scores.load()
+    Game().start(ScreenSaver)
     #ScreenSaver().start()
     #Playing().start()
-    GameOver(0).start()
+    #GameOver(0).start()
 
 
 

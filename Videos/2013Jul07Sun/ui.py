@@ -15,6 +15,7 @@ class UI:
         self.bg_color = bg_color
         self.fg_color = fg_color
         self.controls = []
+        self.transitioning = False
 
         pygame.init()
         self.clock = self.fpsClock = pygame.time.Clock()
@@ -29,6 +30,11 @@ class UI:
         self.target.setup(self.screen)
 
         while True:
+            if self.transitioning:
+                # transition
+                self.target = None
+                return
+
             # fill the background color
             self.screen.fill(pygame.Color(self.bg_color))
             # handle events
@@ -41,6 +47,8 @@ class UI:
             # update the clock
             self.fpsClock.tick(30)
 
+    def transition(self):
+        self.transitioning = True
 
     def handle_events(self):
         """Check for events and allow them to be handled."""
