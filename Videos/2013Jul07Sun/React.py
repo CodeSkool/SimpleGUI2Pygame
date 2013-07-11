@@ -16,7 +16,7 @@ import pygame, pygame.event, pygame.time
 
 from filehelper import FileHelper
 from state import State
-from ui2 import UI, UIContext
+from ui import UI, UIContext
 
 
 # Screen resolution
