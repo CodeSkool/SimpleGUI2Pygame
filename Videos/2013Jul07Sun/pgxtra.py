@@ -184,11 +184,11 @@ def test():
     pygame.init()
 
     # Define the colors we will use in RGB format
-    BLACK = 'black'
-    WHITE = 'white'
-    BLUE =  'blue'
-    GREEN = 'green'
-    RED =   'red'
+    BLACK = pygame.Color('black')
+    WHITE = pygame.Color('white')
+    BLUE =  pygame.Color('blue')
+    GREEN = pygame.Color('green')
+    RED =   pygame.Color('red')
 
     # Set the height, width and caption of the screen
     size = [400, 300]
