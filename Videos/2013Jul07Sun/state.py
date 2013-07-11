@@ -1,11 +1,11 @@
-import ui
+from ui2 import UI
 
 
 class State:
 
     def __init__(self):
         """Create a reference to the UI, and establish the default nextState."""
-        self.ui = ui.UI(self, "")
+        self.ui = UI(self)
         self.nextState = None
 
     def start(self):
@@ -22,7 +22,8 @@ class State:
         pass
 
     def update(self, screen):
-        """Hook: Draw things on the screen that change with every draw loop (animations)."""
+        """Hook: Draw things on the screen that change with every draw loop
+        (animations)."""
         pass
 
     def handle(self, event):
@@ -50,7 +51,7 @@ def main():
         print e
     finally:
         if do_quit:
-            ui.quit()
+            s.ui.quit()
 
 
 if __name__ == '__main__':

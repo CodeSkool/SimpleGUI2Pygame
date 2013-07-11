@@ -16,7 +16,7 @@
 
 import filehelper
 from state import State
-from ui import UI
+from ui2 import UI, UIContext
 import pygame, pygame.event, pygame.time
 import random, itertools, functools
 
@@ -86,18 +86,21 @@ class ScreenSaver(State):
     def draw_high_scores(self, screen):
         scores = HighScores.high_scores
         caption = "High Scores"
-        self.ui.draw_text(screen, caption, font_size=40, location=(screen.get_width() / 2, screen.get_height() / 11), align=0)
+        with self.ui.newcontext(UIContext(font_size=40)):
+            self.ui.draw_text(screen, caption, location=(screen.get_width() / 2, screen.get_height() / 11), align=0)
         spacing = 40
         dots = "".join([" ." for i in range(spacing)])
         for key, (name, score) in sorted(scores.items()):
             txt = "".join([name, dots, str(score)])
-            self.ui.draw_text(screen, txt, font_size=20, location=(screen.get_width() / 2, (key + 1) * screen.get_height() / 12), align=0)
+            self.ui.draw_text(screen, txt, location=(screen.get_width() / 2, (key + 1) * screen.get_height() / 12), align=0)
 
     def draw_logo(self, screen):
         logo = "Whack-a-Dot"
         prompt = "Click to begin"
-        self.ui.draw_text(screen, logo, font_size=60, location=(screen.get_width() / 2, screen.get_height() / 3), align=0)
-        self.ui.draw_text(screen, prompt, font_size=40, location=(screen.get_width() / 2, screen.get_height() / 2), align=0)
+        with self.ui.newcontext(UIContext(font_size=60, location=(screen.get_width() / 2, screen.get_height() / 3), align=0)):
+            self.ui.draw_text(screen, logo)
+        with self.ui.newcontext(UIContext(font_size=40, location=(screen.get_width() / 2, screen.get_height() / 2), align=0)):
+            self.ui.draw_text(screen, prompt)
 
 # game_start
     # Player starts with 3 lives
@@ -137,11 +140,13 @@ class GameStart(State):
         self.transition()
 
     def update(self, screen):
-        self.ui.draw_text(screen, self.text, font_size=80, location=(screen.get_width() / 2, screen.get_height() / 2), align=0)
+        with self.ui.newcontext(UIContext(font_size=80)):
+            self.ui.draw_text(screen, self.text, location=(screen.get_width() / 2, screen.get_height() / 2), align=0)
         lives = "Lives: " + str(self.lives)
         score = "Score: " + str(self.score)
-        self.ui.draw_text(screen, lives, font_size=40, location=(10, screen.get_height() / 10), align=-1)
-        self.ui.draw_text(screen, score, font_size=40, location=(screen.get_width(), screen.get_height() / 10), align=1)
+        with self.ui.newcontext(UIContext(font_size=40)):
+            self.ui.draw_text(screen, lives, location=(10, screen.get_height() / 10), align=-1)
+            self.ui.draw_text(screen, score, location=(screen.get_width(), screen.get_height() / 10), align=1)
 
 # game_over
     # Display the final score, record the user's initials if they got a high score.
@@ -194,21 +199,22 @@ class GameOver(State):
             size = (75, 50)
             location = ((screen.get_width() / 2) - (size[0] / 2),
                         6 * screen.get_height() / 10)
-            self.ui.add_input(screen, "___",
-                          lambda text: self.input_text(text),
-                          location=location, size=size,
-                          font_size=30,
-                          len_cap=3)
+            with self.ui.newcontext(UIContext(font_size=30, len_cap=3)):
+                self.ui.add_input(screen, "___",
+                                  lambda text: self.input_text(text),
+                                  location=location, size=size)
 
     def update(self, screen):
         if self.replace == None:
-            self.ui.draw_text(screen, "Game Over", font_size=40, location=(screen.get_width() / 2, screen.get_height() / 10), align=0)
-            self.ui.draw_text(screen, "Your Score: " + str(self.score), font_size=40, location=(screen.get_width() / 2, 3 * screen.get_height() / 10), align=0)
+            with self.ui.newcontext(UIContext(font_size=40)):
+                self.ui.draw_text(screen, "Game Over", location=(screen.get_width() / 2, screen.get_height() / 10), align=0)
+                self.ui.draw_text(screen, "Your Score: " + str(self.score), location=(screen.get_width() / 2, 3 * screen.get_height() / 10), align=0)
         else:
-            self.ui.draw_text(screen, "Game Over", font_size=40, location=(screen.get_width() / 2, screen.get_height() / 10), align=0)
-            self.ui.draw_text(screen, "New High Score!", font_size=40, location=(screen.get_width() / 2, 3 * screen.get_height() / 10), align=0)
-            self.ui.draw_text(screen, "Your Score: " + str(self.score), font_size=40, location=(screen.get_width() / 2, 4 * screen.get_height() / 10), align=0)
-            self.ui.draw_text(screen, "Enter your initials:", font_size=40, location=(screen.get_width() / 2, 5 * screen.get_height() / 10), align=0)
+            with self.ui.newcontext(UIContext(font_size=40)):
+                self.ui.draw_text(screen, "Game Over", location=(screen.get_width() / 2, screen.get_height() / 10), align=0)
+                self.ui.draw_text(screen, "New High Score!", location=(screen.get_width() / 2, 3 * screen.get_height() / 10), align=0)
+                self.ui.draw_text(screen, "Your Score: " + str(self.score), location=(screen.get_width() / 2, 4 * screen.get_height() / 10), align=0)
+                self.ui.draw_text(screen, "Enter your initials:", location=(screen.get_width() / 2, 5 * screen.get_height() / 10), align=0)
 
 
 
@@ -280,18 +286,20 @@ class Playing(State):
         lives = "Lives: " + str(self.lives)
         misses = "Misses: " + str(self.misses) + " of " + str(self.misses_per_life)
         score = "Score: " + str(self.score)
-        self.ui.draw_text(screen, lives, font_size=40, location=(10, screen.get_height() / 10), align=-1)
-        self.ui.draw_text(screen, misses, font_size=40, location=(10, 2 * screen.get_height() / 10), align=-1)
-        self.ui.draw_text(screen, score, font_size=40, location=(screen.get_width(), screen.get_height() / 10), align=1)
-        self.ui.draw_text(screen, time, font_size=40, location=(screen.get_width(), 2 * screen.get_height() / 10), align=1)
+        with self.ui.newcontext(UIContext(font_size=40)):
+            self.ui.draw_text(screen, lives, location=(10, screen.get_height() / 10), align=-1)
+            self.ui.draw_text(screen, misses, location=(10, 2 * screen.get_height() / 10), align=-1)
+            self.ui.draw_text(screen, score, location=(screen.get_width(), screen.get_height() / 10), align=1)
+            self.ui.draw_text(screen, time, location=(screen.get_width(), 2 * screen.get_height() / 10), align=1)
         # draw cirles
         [pos, radius, width, rect] = self.dot
         screen.lock()
         try:
-            self.dot[3] = self.ui.draw_circle(screen, pos=pos, radius=radius, width=width)
+            self.dot[3] = self.ui.draw_circle(screen, location=pos, radius=radius)
             for circle in self.circles:
                 [pos, radius, width, rect] = circle
-                self.ui.draw_circle(screen, pos=pos, radius=radius, width=width)
+                with self.ui.newcontext(UIContext(line_width = circle[2])):
+                    self.ui.draw_circle(screen, location=pos, radius=radius)
         finally:
             screen.unlock()
 

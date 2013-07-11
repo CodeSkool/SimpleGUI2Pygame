@@ -60,6 +60,7 @@ class UI:
         self.target = target
         self.context = input_or_default(UI.default_context, context)
         self.controls = []
+        self.transitioning = False
 
     def start(self):
         """Initialize pygame, set up the target and run the main game loop
@@ -75,6 +76,11 @@ class UI:
         self.target.setup(self.screen)
 
         while True:
+            if self.transitioning:
+                # transition
+                self.target = None
+                return
+
             # fill the background color
             self.screen.fill(self.context.bg_color)
             # handle events
@@ -87,6 +93,8 @@ class UI:
             # update the clock
             self.fpsClock.tick(30)
 
+    def transition(self):
+        self.transitioning = True
 
     def handle_events(self):
         """Check for events and allow them to be handled."""
