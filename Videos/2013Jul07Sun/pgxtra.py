@@ -145,13 +145,13 @@ class InputField(PgxtraWidget):
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 pos = pygame.mouse.get_pos()
                 surface_rect = self.get_surface_rect()
-                if surface_rect.collidepoint(pos):
+                if surface_rect <> None and surface_rect.collidepoint(pos):
                     self.click_press()
                     response = ""
             elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:
                 pos = pygame.mouse.get_pos()
                 surface_rect = self.get_surface_rect()
-                if surface_rect.collidepoint(pos):
+                if surface_rect <> None and surface_rect.collidepoint(pos):
                     self.click_release()
 
             label = self.get_label()
