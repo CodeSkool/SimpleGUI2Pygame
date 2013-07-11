@@ -184,6 +184,13 @@ class UI:
         return pygame.draw.circle(screen, self.context.fg_color, location,
                                   radius, self.context.line_width)
 
+    def draw_rect(self, screen, location=None, size=None, color=None):
+        location = input_or_default(self.context.location, location)
+        size = input_or_default(self.context.size, size)
+        color = input_or_default(self.context.fg_color, color)
+
+        return pygame.draw.rect(screen, color, pygame.Rect(location, size))
+
     # this will allow the "with" keyword for context customization
     @contextlib.contextmanager
     def newcontext(self, context=None):
@@ -213,10 +220,15 @@ def main():
             self.ui.draw_text(screen,
                               "The quick brown fox jumps over the lazy dog.",
                               location=(10, 75))
+            screen.lock()
+            self.ui.draw_circle(screen, (50, 200), 30)
+            self.ui.draw_rect(screen, (50, 300), (60, 60))
+            screen.unlock()
         def setup(self, screen):
             self.ui.add_button(screen, "New button", self.button_handler)
             self.ui.add_input(screen, "New input", self.button_handler,
                               location=(10, 40))
+
         def handle(self, event):
             pass
         def button_handler(self, btn):
