@@ -10,34 +10,74 @@ ShowFileExtensions=FALSE
 ClassName=TProjectFilesNode
 
 [Project\ChildNodes\Node0\ChildNodes\Node0]
+ClassName=TProjectFolderNode
+Name=resources
+
+[Project\ChildNodes\Node0\ChildNodes\Node0\ChildNodes\Node0]
 ClassName=TProjectFileNode
 FileName=C:\Dev\Python\CodeSkool101\SimpleGUI2Pygame\Code\Utilities\Comfortaa-Regular.ttf
 
+[Project\ChildNodes\Node0\ChildNodes\Node0\ChildNodes]
+Count=1
+
 [Project\ChildNodes\Node0\ChildNodes\Node1]
+ClassName=TProjectFolderNode
+Name=utilities
+
+[Project\ChildNodes\Node0\ChildNodes\Node1\ChildNodes\Node0]
 ClassName=TProjectFileNode
 FileName=C:\Dev\Python\CodeSkool101\SimpleGUI2Pygame\Code\Utilities\filehelper.py
 
-[Project\ChildNodes\Node0\ChildNodes\Node2]
+[Project\ChildNodes\Node0\ChildNodes\Node1\ChildNodes\Node1]
 ClassName=TProjectFileNode
 FileName=C:\Dev\Python\CodeSkool101\SimpleGUI2Pygame\Code\Utilities\pgxtra.py
 
-[Project\ChildNodes\Node0\ChildNodes\Node3]
+[Project\ChildNodes\Node0\ChildNodes\Node1\ChildNodes\Node2]
 ClassName=TProjectFileNode
 FileName=C:\Dev\Python\CodeSkool101\SimpleGUI2Pygame\Code\Utilities\state.py
 
-[Project\ChildNodes\Node0\ChildNodes\Node4]
+[Project\ChildNodes\Node0\ChildNodes\Node1\ChildNodes\Node3]
 ClassName=TProjectFileNode
 FileName=C:\Dev\Python\CodeSkool101\SimpleGUI2Pygame\Code\Utilities\ui.py
 
-[Project\ChildNodes\Node0\ChildNodes\Node5]
+[Project\ChildNodes\Node0\ChildNodes\Node1\ChildNodes]
+Count=4
+
+[Project\ChildNodes\Node0\ChildNodes\Node2]
 ClassName=TProjectFileNode
 FileName=$[Project-Path]whack_a_dot.py
 
 [Project\ChildNodes\Node0\ChildNodes]
-Count=6
+Count=3
 
 [Project\ChildNodes\Node1]
 ClassName=TProjectRunConfiguationsNode
+
+[Project\ChildNodes\Node1\ChildNodes\Node0]
+ClassName=TProjectRunConfiguationNode
+Name=First
+
+[Project\ChildNodes\Node1\ChildNodes\Node0\RunConfig]
+ScriptName=C:\Dev\Python\CodeSkool101\SimpleGUI2Pygame\Code\Timers\whack_a_dot.py
+Description=Debug
+EngineType=peRemote
+ReinitializeBeforeRun=TRUE
+WorkingDir=$[ActiveScript-Dir]
+WriteOutputToFile=FALSE
+OutputFileName=$[ActiveScript-NoExt].log
+AppendToFile=FALSE
+
+[Project\ChildNodes\Node1\ChildNodes\Node0\RunConfig\ExternalRun]
+Caption=External Run
+Description=Run script using an external Python Interpreter
+ApplicationName=$[PythonExe-Short]
+Parameters=$[ActiveScript-Short]
+WorkingDirectory=$[ActiveScript-Dir]
+ShortCut=0
+MessagesFormat=$[FileName] $[LineNumber]
+
+[Project\ChildNodes\Node1\ChildNodes]
+Count=1
 
 [Project\ChildNodes]
 Count=2
