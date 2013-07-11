@@ -81,7 +81,7 @@ class UI:
         """Draw the specified text to the screen at the specified location.
         Return the text surface.
         """
-        assert align >= -1 and align <= 1, "align must be -1, 0, or 1"
+        assert -1 <= align <= 1, "align must be -1, 0, or 1"
         if location == None:
             location = (10, 10)
         if font_size == None:

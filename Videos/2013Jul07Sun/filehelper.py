@@ -15,11 +15,8 @@ class FileHelper:
 
     def save(self, object_to_save):
         """Pickle the object to the file"""
-        file = open(self.filename, "w")
-        try:
+        with open(self.filename, "w") as file:
             pickle.dump(object_to_save, file)
-        finally:
-            file.close()
 
     def load(self):
         """Unpickle the object from the file if it exists"""
