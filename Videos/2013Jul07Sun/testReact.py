@@ -15,21 +15,41 @@ import random
 # CONSTANTS
 W, H = 640, 480
 
-COLORS = {'Name'  :('r','g','b','a'),
-          'red'   :pygame.Color(255,  0,  0,255),
-          'green' :pygame.Color(  0,255,  0,255),
-          'blue'  :pygame.Color(  0,  0,255,255),
-          'yellow':pygame.Color(255,255,  0,255),
-          'ltblue':pygame.Color(  0,255,255,255),
-          'purple':pygame.Color(255,  0,255,255),
-          'lime'  :pygame.Color(  0,127,200,255),
-          'violet':pygame.Color(127,127,255,255),
-          'pink'  :pygame.Color(127,  0,200,255)}
-color = ['red','green','blue','yellow','ltblue','purple','lime','violet','pink']
+RED    = pygame.Color(255,  0,  0,255)
+GREEN  = pygame.Color(  0,255,  0,255)
+BLUE   = pygame.Color(  0,  0,255,255)
+YELLOW = pygame.Color(255,255,  0,255)
+LTBLUE = pygame.Color(  0,255,255,255)
+PURPLE = pygame.Color(255,  0,255,255)
+LIME   = pygame.Color(  0,127,200,255)
+VIOLET = pygame.Color(127,127,255,255)
+PINK   = pygame.Color(127,  0,200,255)
+BLACK  = pygame.Color(  0,  0,  0,255)
+WHITE  = pygame.Color(255,255,255,255)
+
+COLORS = [RED, GREEN, BLUE, YELLOW, LTBLUE, PURPLE, LIME, VIOLET, PINK]
+
+class Square:
+    def __init__(self, ui, surface, location, size, color, spawn_time)
+        self.ui = ui
+        self.surface = surface
+        self.location = location
+        self.size = size
+        self.color = color
+        self.spawn_time = spawn_time
+        self.rect = self.ui.draw_rect(surface, location, size, color)
+
+    def get_spawn_time(self):
+        return self.spawn_time
+
+    def handler(self, pos):
+        if self.rect.collidepoint(pos):
+
+
 
 
 # Classes
-class Square(pygame.sprite.Sprite):
+class Squares(pygame.sprite.Sprite):
 
     def __init__(self, surface, size, color, shapes):
         pygame.sprite.Sprite.__init__(self)
@@ -147,79 +167,6 @@ class Square(pygame.sprite.Sprite):
         return self.pos
 
 
-class Circle(pygame.sprite.Sprite):
-
-    def __init__(self, surface, size, color, shapes):
-        pygame.sprite.Sprite.__init__(self)
-        self.surface = surface
-        self.radius = size / 2
-        self.size = size
-        self.color = color
-        self.clickable = True
-
-        # Get random start position and velocity
-        xpos = random.randrange(size, W - size)
-        ypos = random.randrange(size, H - size)
-        self.pos = [xpos, ypos]
-
-        xvel = random.randrange(-5, 5)
-        yvel = random.randrange(-5, 5)
-        self.vel = [xvel, yvel]
-
-        # Find center point
-        centerx = self.pos[0] + self.radius
-        centery = self.pos[1] + self.radius
-        self.center = (centerx, centery)
-
-        # Create surface and draw circle
-        self.image = pygame.Surface((self.size, self.size))
-        self.rect = pygame.draw.circle(self.image, self.color,
-                                         self.center, self.radius)
-
-    def draw(self):
-        self.surface.blit(self.image, self.pos)
-
-    def update(self, hitlist):
-        # Update position
-        self.pos[0] += self.vel[0]
-        self.pos[1] += self.vel[1]
-
-        # If near edges, reverse direction
-        if self.pos[0] < 0:
-            self.pos[0] = 0
-            self.vel[0] = -self.vel[0]
-        elif self.pos[0] > W - self.size:
-            self.pos[0] = W - self.size
-            self.vel[0] = -self.vel[0]
-        if self.pos[1] < 0:
-            self.pos[1] = 0
-            self.vel[1] = -self.vel[1]
-        elif self.pos[1] > H - self.size:
-            self.pos[1] = H - self.size
-            self.vel[1] = -self.vel[1]
-
-        # If collide with other object, switch velocities
-        if self in hitlist:
-            other_vel = hitlist[self][0].get_vel()
-            self.vel, other_vel = other_vel, self.vel
-            hitlist[self][0].change_vel(other_vel)
-
-        # Update self.rect position
-        self.rect.topleft = self.pos
-
-    def check_event(self, pos):
-        if self.clickable:
-            if self.rect.collidepoint(pos):
-                self.kill()
-                return True
-
-    def get_vel(self):
-        return self.vel
-
-    def change_vel(self, new_vel):
-        self.vel = new_vel
-
-
 def main():
     pygame.init()
     clock = pygame.time.Clock()
@@ -227,20 +174,20 @@ def main():
     pygame.display.set_caption('Test')
     surface = pygame.Surface(screen.get_size())
     surface.convert()
-    surface.fill(pygame.Color(0,0,0,0))
+    surface.fill(BLACK)
 
     shapes = pygame.sprite.Group()
 
     while len(shapes) < 30:
-        for i in range(len(color)):
-            obj1 = Square(surface, 35, COLORS[color[i]], shapes)
+        for i in range(len(COLORS)):
+            obj1 = Square(surface, 35, COLORS[i], shapes)
 
-            #obj2 = Circle(surface, 35, COLORS[color[i]], shapes)
+            #obj2 = Circle(surface, 35, COLORS[i], shapes)
             shapes.add(obj1)
 
     while True:
         clock.tick(30)
-        surface.fill(pygame.Color(0,0,0,0))
+        surface.fill(BLACK)
 
         shape_copy = pygame.sprite.Group(shapes)
         for shape in shapes:

@@ -19,22 +19,36 @@ class UIContext:
                  font=None, font_size=None, bg_color=None, fg_color=None,
                  location=None, size=None, align=None, len_cap=None,
                  line_width=None):
+        # Window title
+        self.title = input_or_default("", title)
 
-        self.title = input_or_default("a", title)
-        print self.title
+        # Screen resolution width & height
         self.width = input_or_default(640, width)
         self.height = input_or_default(480, height)
+
+        # Flags to set display mode, 0 = standard windows mode with frame
         self.display_flags = input_or_default(0, display_flags)
+
+        # Font type and size. TTF required for packaging as .exe
         self.font = input_or_default("Comfortaa-Regular.ttf", font)
         self.font_size = input_or_default(20, font_size)
+
+        # Background and foreground pygame color objects
         self.bg_color = input_or_default(LTBLUE, bg_color)
         self.fg_color = input_or_default(NAVY, fg_color)
+
+        # Location and size for objects
         self.location = input_or_default((0,0), location)
         self.size = input_or_default((100, 25), size)
+
+        # Alignment for objects, -1 = left, 0 = center, 1 = right
         self.align = input_or_default(-1, align)
         assert self.align >= -1 and self.align <= 1, "align must be -1, 0, or 1"
 
+        # Length cap in number of characters, 0 = no cap
         self.len_cap = input_or_default(0, len_cap)
+
+        # Outline width of drawn objects
         self.line_width = input_or_default(0, line_width)
 
 
@@ -46,6 +60,7 @@ class UI:
         self.target = target
         self.context = input_or_default(UI.default_context, context)
         self.controls = []
+        self.transitioning = False
 
     def start(self):
         """Initialize pygame, set up the target and run the main game loop
@@ -61,6 +76,11 @@ class UI:
         self.target.setup(self.screen)
 
         while True:
+            if self.transitioning:
+                # transition
+                self.target = None
+                return
+
             # fill the background color
             self.screen.fill(self.context.bg_color)
             # handle events
@@ -73,6 +93,8 @@ class UI:
             # update the clock
             self.fpsClock.tick(30)
 
+    def transition(self):
+        self.transitioning = True
 
     def handle_events(self):
         """Check for events and allow them to be handled."""
@@ -107,6 +129,7 @@ class UI:
         """
         location = input_or_default(self.context.location, location)
         align = input_or_default(self.context.align, align)
+
         if pygame.font:
             font = pygame.font.Font(self.context.font,
                                     self.context.font_size)
@@ -161,7 +184,14 @@ class UI:
         return pygame.draw.circle(screen, self.context.fg_color, location,
                                   radius, self.context.line_width)
 
-    # this next part will let us use the "with" keyword
+    def draw_rect(self, screen, location=None, size=None, color=None):
+        location = input_or_default(self.context.location, location)
+        size = input_or_default(self.context.size, size)
+        color = input_or_default(self.context.fg_color, color)
+
+        return pygame.draw.rect(screen, color, pygame.Rect(location, size))
+
+    # this will allow the "with" keyword for context customization
     @contextlib.contextmanager
     def newcontext(self, context=None):
         context = input_or_default(self.context, context)
@@ -177,22 +207,28 @@ class UI:
             self.context = oldcontext
 
 
-
 def quit():
     """Stop Pygame and exit the program."""
     pygame.quit()
     sys.exit()
-
 
 def main():
     class tester:
         def __init__(self):
             self.ui = UI(self)
         def update(self, screen):
-            self.ui.draw_text(screen, "The quick brown fox jumps over the lazy dog.", location=(10, 75))
+            self.ui.draw_text(screen,
+                              "The quick brown fox jumps over the lazy dog.",
+                              location=(10, 75))
+            screen.lock()
+            self.ui.draw_circle(screen, (50, 200), 30)
+            self.ui.draw_rect(screen, (50, 300), (60, 60))
+            screen.unlock()
         def setup(self, screen):
             self.ui.add_button(screen, "New button", self.button_handler)
-            self.ui.add_input(screen, "New input", self.button_handler, location=(10, 40))
+            self.ui.add_input(screen, "New input", self.button_handler,
+                              location=(10, 40))
+
         def handle(self, event):
             pass
         def button_handler(self, btn):
@@ -203,7 +239,6 @@ def main():
     tester().start()
     import time
     time.sleep(30)
-
 
     quit()
 
