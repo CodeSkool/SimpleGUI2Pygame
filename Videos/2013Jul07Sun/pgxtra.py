@@ -58,7 +58,7 @@ class PgxtraWidget(pygame.sprite.Sprite):
         self.len_cap = len_cap
 
         self.image = pygame.Surface(self.size)
-        self.image.fill(pygame.Color(bg_color))
+        self.image.fill(bg_color)
 
         rect = self.image.get_rect()
         self.rect = (rect[0]+location[0], rect[1]+location[1], rect[2], rect[3])
@@ -67,10 +67,10 @@ class PgxtraWidget(pygame.sprite.Sprite):
         pygame.mouse.set_visible(True)
 
     def draw(self):
-        rect = pygame.draw.rect(self.screen, pygame.Color(self.bg_color), self.rect)
+        rect = pygame.draw.rect(self.screen, self.bg_color, self.rect)
         self.surface_rect = rect
         font = pygame.font.Font(None, self.font_size)
-        text = font.render(self.label, 1, pygame.Color(self.text_color))
+        text = font.render(self.label, 1, self.text_color)
         size = font.size(self.label)
         textpos = ((self.size[0] - size[0]) // 2 + self.location[0],
                    (self.size[1] - size[1]) // 2 + self.location[1])
