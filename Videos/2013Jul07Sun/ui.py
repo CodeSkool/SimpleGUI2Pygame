@@ -166,6 +166,8 @@ def main():
         time.sleep(30)
     except Exception as e:
         print e
+        print e.args
+        print dir(e)
     finally:
         quit()
 
