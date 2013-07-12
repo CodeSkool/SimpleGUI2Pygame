@@ -207,7 +207,7 @@ class Playing(State):
         self.penalty_color = self.bonus_color
         while self.penalty_color == self.bonus_color:
             self.penalty_color = self.rand_color()
-        self.limit = 3000
+        self.limit = 2000
 
     def start(self):
         self.start_time = pygame.time.get_ticks()
@@ -227,15 +227,14 @@ class Playing(State):
 
         if event.type == self.eventid2:
             if self.penalties >= self.penalties_per_life - 1:
-                self.limit -= 1000
-                TimerEvents().stop(eventid=self.eventid2)
                 if self.lives > 1:
                     self.nextState = lambda: GameStart(self.lives - 1,
                                                        self.score)
                 else:
                     self.nextState = lambda: GameOver(self.score)
             else:
-                self.nextState = lambda: Playing(self.lives, self.penalties + 1)
+                self.nextState = lambda: Playing(self.lives, self.score,
+                                                 self.penalties + 1)
             self.transition()
 
         elif event.type == pygame.MOUSEBUTTONDOWN:
@@ -243,7 +242,7 @@ class Playing(State):
                 if square[3].collidepoint(event.pos):
                     self.destroy(square)
                     TimerEvents().start(eventid=self.eventid2,
-                                        milliseconds=2000)
+                                        milliseconds=self.limit)
                     if square[2] == self.bonus_color:
                         self.score += 200
                     elif square[2] == self.penalty_color:
@@ -287,8 +286,8 @@ class Playing(State):
                               VIOLET, PINK, NAVY])
 
     def rand_vel(self):
-        xvel = random.choice([-3,-2,-1,1,2,3])
-        yvel = random.choice([-3,-2,-1,1,2,3])
+        xvel = random.choice([-5,-4,-3,3,4,5])
+        yvel = random.choice([-5,-4,-3,3,4,5])
         vel = (xvel, yvel)
         return vel
 
@@ -297,7 +296,7 @@ class Playing(State):
         self.spawn()
 
     def spawn(self):
-        side = 40
+        side = 50
         pos, rect = self.rand_pos(side)
         while not self.is_unique(rect):
             pos, rect = self.rand_pos(side)
@@ -359,9 +358,9 @@ class Playing(State):
                 size = square[1]
                 color = square[2]
                 self.ui.draw_rect(screen, pos, size, color)
-            self.ui.draw_rect(screen, (3*W/10+50, H/10 - 15), (50, 50),
+            self.ui.draw_rect(screen, (3*W/10+50, H/10 - 15), (60, 60),
                               self.bonus_color)
-            self.ui.draw_rect(screen, (6*W/10+10, H/10 - 15), (50, 50),
+            self.ui.draw_rect(screen, (6*W/10+10, H/10 - 15), (60, 60),
                               self.penalty_color)
         finally:
             screen.unlock()
