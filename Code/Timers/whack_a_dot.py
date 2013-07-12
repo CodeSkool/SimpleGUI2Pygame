@@ -16,9 +16,7 @@
 # Display the final score, record the user's initials if they got a high score.
 # Display the logo / high-score list loop
 
-from filehelper import FileHelper
-from state import State
-from ui import UI, UIContext
+import filehelper, ui, state, pgxtra
 import pygame, pygame.event, pygame.time
 import random, itertools, functools
 
@@ -38,22 +36,22 @@ class HighScores:
     def __init__(self):
         self.high_scores_file = "high_scores.pkl"
     def load(self):
-        HighScores.high_scores = FileHelper(self.high_scores_file).load()
+        HighScores.high_scores = filehelper.FileHelper(self.high_scores_file).load()
         if HighScores.high_scores == None:
             keys = [i + 1 for i in range(10)]
             values = [("ACE", 100 * (i+1)) for i in range(10, 0, -1)]
             HighScores.high_scores = dict(itertools.izip(keys, values))
     def save(self):
-        FileHelper(self.high_scores_file).save(HighScores.high_scores)
+        filehelper.FileHelper(self.high_scores_file).save(HighScores.high_scores)
 
 # screen_saver
     # Game starts with a logo "Whack-A-Dot", prompt "Click to begin".
     #   After 10 seconds, display the high scores.
     #   After 20 seconds return to the logo.
     # User click >>> game_start
-class ScreenSaver(State):
+class ScreenSaver(state.State):
     def __init__(self, current=0):
-        State.__init__(self)
+        state.State.__init__(self)
         self.nextState = GameStart
         logo_duration = 5 * 1000
         scores_duration = 5 * 1000
@@ -66,7 +64,7 @@ class ScreenSaver(State):
     def start(self):
         TimerEvents().start(eventid=self.eventid,
                             milliseconds=self.displays[self.current][0])
-        State.start(self)
+        state.State.start(self)
 
     def handle(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
@@ -88,7 +86,7 @@ class ScreenSaver(State):
     def draw_high_scores(self, screen):
         scores = HighScores.high_scores
         caption = "High Scores"
-        with self.ui.newcontext(UIContext(font_size=40)):
+        with self.ui.newcontext(ui.UIContext(font_size=40)):
             self.ui.draw_text(screen, caption, location=(screen.get_width() / 2, screen.get_height() / 11), align=0)
         spacing = 40
         dots = "".join([" ." for i in range(spacing)])
@@ -99,9 +97,9 @@ class ScreenSaver(State):
     def draw_logo(self, screen):
         logo = "Whack-a-Dot"
         prompt = "Click to begin"
-        with self.ui.newcontext(UIContext(font_size=60, location=(screen.get_width() / 2, screen.get_height() / 3), align=0)):
+        with self.ui.newcontext(ui.UIContext(font_size=60, location=(screen.get_width() / 2, screen.get_height() / 3), align=0)):
             self.ui.draw_text(screen, logo)
-        with self.ui.newcontext(UIContext(font_size=40, location=(screen.get_width() / 2, screen.get_height() / 2), align=0)):
+        with self.ui.newcontext(ui.UIContext(font_size=40, location=(screen.get_width() / 2, screen.get_height() / 2), align=0)):
             self.ui.draw_text(screen, prompt)
 
 # game_start
@@ -109,9 +107,9 @@ class ScreenSaver(State):
     # Prompt: Click when ready
     # Game counts down: 3, 2, 1... GO!
     # >>> playing
-class GameStart(State):
+class GameStart(state.State):
     def __init__(self, lives=3, score=0):
-        State.__init__(self)
+        state.State.__init__(self)
         self.lives = lives
         self.score = score
         self.nextState = lambda: Playing(self.lives, self.score)
@@ -123,7 +121,7 @@ class GameStart(State):
 
     def start(self):
         self.start_timer()
-        State.start(self)
+        state.State.start(self)
 
     def handle(self, event):
         if event.type == self.eventid:
@@ -142,11 +140,11 @@ class GameStart(State):
         self.transition()
 
     def update(self, screen):
-        with self.ui.newcontext(UIContext(font_size=80)):
+        with self.ui.newcontext(ui.UIContext(font_size=80)):
             self.ui.draw_text(screen, self.text, location=(screen.get_width() / 2, screen.get_height() / 2), align=0)
         lives = "Lives: " + str(self.lives)
         score = "Score: " + str(self.score)
-        with self.ui.newcontext(UIContext(font_size=40)):
+        with self.ui.newcontext(ui.UIContext(font_size=40)):
             self.ui.draw_text(screen, lives, location=(10, screen.get_height() / 10), align=-1)
             self.ui.draw_text(screen, score, location=(screen.get_width(), screen.get_height() / 10), align=1)
 
@@ -162,9 +160,9 @@ class GameStart(State):
     #               >>> game_start
     # LOOP until no more lives
     # >>> GameOver
-class Playing(State):
+class Playing(state.State):
     def __init__(self, lives=3, score=0, misses=0):
-        State.__init__(self)
+        state.State.__init__(self)
         self.nextState = None
         self.eventid = TimerEvents.Playing
         self.score = score
@@ -178,7 +176,7 @@ class Playing(State):
     def start(self):
         self.start_time = pygame.time.get_ticks()
         TimerEvents().start(eventid=self.eventid, milliseconds=self.countdown)
-        State.start(self)
+        state.State.start(self)
 
     def handle(self, event):
         if event.type == self.eventid:
@@ -219,7 +217,7 @@ class Playing(State):
         lives = "Lives: " + str(self.lives)
         misses = "Misses: " + str(self.misses) + " of " + str(self.misses_per_life)
         score = "Score: " + str(self.score)
-        with self.ui.newcontext(UIContext(font_size=40)):
+        with self.ui.newcontext(ui.UIContext(font_size=40)):
             self.ui.draw_text(screen, lives, location=(10, screen.get_height() / 10), align=-1)
             self.ui.draw_text(screen, misses, location=(10, 2 * screen.get_height() / 10), align=-1)
             self.ui.draw_text(screen, score, location=(screen.get_width(), screen.get_height() / 10), align=1)
@@ -231,7 +229,7 @@ class Playing(State):
             self.dot[3] = self.ui.draw_circle(screen, location=pos, radius=radius)
             for circle in self.circles:
                 [pos, radius, width, rect] = circle
-                with self.ui.newcontext(UIContext(line_width = circle[2])):
+                with self.ui.newcontext(ui.UIContext(line_width = circle[2])):
                     self.ui.draw_circle(screen, location=pos, radius=radius)
         finally:
             screen.unlock()
@@ -241,9 +239,9 @@ class Playing(State):
 # game_over
     # Display the final score, record the user's initials if they got a high score.
     # >>> screen_saver
-class GameOver(State):
+class GameOver(state.State):
     def __init__(self, score):
-        State.__init__(self)
+        state.State.__init__(self)
         self.nextState = lambda: ScreenSaver(current=1)
         self.eventid = TimerEvents.GameOver
         self.score = score
@@ -258,7 +256,7 @@ class GameOver(State):
     def start(self):
         if self.replace == None:
             TimerEvents().start(self.eventid, self.countdown)
-        State.start(self)
+        state.State.start(self)
 
     def handle(self, event):
         if event.type == self.eventid:
@@ -266,7 +264,7 @@ class GameOver(State):
 
     def transition(self):
         TimerEvents().stop(self.eventid)
-        State.transition(self)
+        state.State.transition(self)
 
     def input_text(self, text):
         new_scores = {}
@@ -289,18 +287,18 @@ class GameOver(State):
             size = (75, 50)
             location = ((screen.get_width() / 2) - (size[0] / 2),
                         6 * screen.get_height() / 10)
-            with self.ui.newcontext(UIContext(font_size=30, len_cap=3)):
+            with self.ui.newcontext(ui.UIContext(font_size=30, len_cap=3)):
                 self.ui.add_input(screen, "___",
                                   lambda text: self.input_text(text),
                                   location=location, size=size)
 
     def update(self, screen):
         if self.replace == None:
-            with self.ui.newcontext(UIContext(font_size=40)):
+            with self.ui.newcontext(ui.UIContext(font_size=40)):
                 self.ui.draw_text(screen, "Game Over", location=(screen.get_width() / 2, screen.get_height() / 10), align=0)
                 self.ui.draw_text(screen, "Your Score: " + str(self.score), location=(screen.get_width() / 2, 3 * screen.get_height() / 10), align=0)
         else:
-            with self.ui.newcontext(UIContext(font_size=40)):
+            with self.ui.newcontext(ui.UIContext(font_size=40)):
                 self.ui.draw_text(screen, "Game Over", location=(screen.get_width() / 2, screen.get_height() / 10), align=0)
                 self.ui.draw_text(screen, "New High Score!", location=(screen.get_width() / 2, 3 * screen.get_height() / 10), align=0)
                 self.ui.draw_text(screen, "Your Score: " + str(self.score), location=(screen.get_width() / 2, 4 * screen.get_height() / 10), align=0)
