@@ -46,8 +46,10 @@ class TimerEvents:
     Playing = pygame.USEREVENT + 3
     GameOver = pygame.USEREVENT + 4
     BuzzKill = pygame.USEREVENT + 5
+
     def start(self, eventid, milliseconds=1000):
         pygame.time.set_timer(eventid, int(milliseconds))
+
     def stop(self, eventid):
         pygame.time.set_timer(eventid, 0)
 
@@ -186,7 +188,7 @@ class GameStart(State):
         lives = "Lives: " + str(self.lives)
         score = "Score: " + str(self.score)
         self.ui.draw_text(screen, lives, location=(W/10, H/10), align=-1)
-        self.ui.draw_text(screen, score, location=(9*W/10, H/10), align=1)
+        self.ui.draw_text(screen, score, location=(9 * W/10, H/10), align=1)
 
 
 class Playing(State):
@@ -207,7 +209,7 @@ class Playing(State):
         self.penalty_color = self.bonus_color
         while self.penalty_color == self.bonus_color:
             self.penalty_color = self.rand_color()
-        self.limit = 2000
+        self.limit = 2 * 1000
 
     def start(self):
         self.start_time = pygame.time.get_ticks()
@@ -225,7 +227,7 @@ class Playing(State):
             TimerEvents().start(eventid=self.eventid,
                                 milliseconds=self.countdown)
 
-        if event.type == self.eventid2:
+        elif event.type == self.eventid2:
             if self.penalties >= self.penalties_per_life - 1:
                 if self.lives > 1:
                     self.nextState = lambda: GameStart(self.lives - 1,
@@ -268,7 +270,7 @@ class Playing(State):
 
     def rand_pos(self, side):
         xpos = random.randrange(side, W - side)
-        ypos = random.randrange(2.5*H/10 + side, H - side)
+        ypos = random.randrange(2.5 * H/10 + side, H - side)
         pos = (xpos, ypos)
         rect = pygame.Rect(pos, (side, side))
         return pos, rect
@@ -305,7 +307,8 @@ class Playing(State):
         self.squares.append([pos, (side, side), color, rect, vel])
 
     def get_time(self):
-        return ((self.countdown - (pygame.time.get_ticks() - self.start_time)) // 1000) + 1
+        return ((self.countdown - \
+                (pygame.time.get_ticks() - self.start_time)) // 1000) + 1
 
     def update(self, screen):
         # draw stats
@@ -397,14 +400,15 @@ class GameOver(State):
     def input_text(self, text):
         new_scores = {}
         text = text.upper()
-        old_scores = sorted(HighScores.high_scores.keys())
+        HS = HighScores.high_scores
+        old_scores = sorted(HS.keys())
         index = old_scores.index(self.replace)
         for key in old_scores[:index]:
-            new_scores[key] = HighScores.high_scores[key]
+            new_scores[key] = HS[key]
         new_scores[self.replace] = (text, self.score)
-        for index in xrange(index + 1, len(HighScores.high_scores)):
-            new_scores[old_scores[index]] = HighScores.high_scores[old_scores[index - 1]]
-        HighScores.high_scores = new_scores
+        for index in xrange(index + 1, len(HS)):
+            new_scores[old_scores[index]] = HS[old_scores[index - 1]]
+        HS = new_scores
         high_scores.save()
         self.transition()
 
@@ -413,8 +417,7 @@ class GameOver(State):
             pass
         else:
             size = (75, 50)
-            location = ((W/2) - (size[0] / 2),
-                        6 * H/10)
+            location = ((W/2) - (size[0] / 2), 6 * H/10)
             with self.ui.newcontext(UIContext(font_size=30, len_cap=3)):
                 self.ui.add_input(screen, "___",
                                   lambda text: self.input_text(text),
