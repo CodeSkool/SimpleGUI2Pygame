@@ -447,5 +447,8 @@ class Game:
             current_state.start()
             current_state = current_state.get_next_state()()
 
-# Test
-Game().start(SplashScreen)
+def main():
+    Game().start(SplashScreen)
+
+if __name__ == '__main__':
+    main()
