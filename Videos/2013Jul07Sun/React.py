@@ -400,15 +400,14 @@ class GameOver(State):
     def input_text(self, text):
         new_scores = {}
         text = text.upper()
-        HS = HighScores.high_scores
-        old_scores = sorted(HS.keys())
+        old_scores = sorted(HighScores.high_scores.keys())
         index = old_scores.index(self.replace)
         for key in old_scores[:index]:
-            new_scores[key] = HS[key]
+            new_scores[key] = HighScores.high_scores[key]
         new_scores[self.replace] = (text, self.score)
-        for index in xrange(index + 1, len(HS)):
-            new_scores[old_scores[index]] = HS[old_scores[index - 1]]
-        HS = new_scores
+        for index in xrange(index + 1, len(HighScores.high_scores)):
+            new_scores[old_scores[index]] = HighScores.high_scores[old_scores[index - 1]]
+        HighScores.high_scores = new_scores
         high_scores.save()
         self.transition()
 
