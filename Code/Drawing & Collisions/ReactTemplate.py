@@ -1,11 +1,7 @@
 #!/usr/local/bin/python
 
 #-------------------------------------------------------------------------------
-# Name:        React
-# Author:      Jules
-# Created:     07/08/2013
-# Copyright:   (c) Julie Ann Stoltz 2013
-# Licence:     DBAD (refer to http://www.dbad-license.org/)
+# React Template
 #-------------------------------------------------------------------------------
 
 import random
@@ -45,7 +41,6 @@ class TimerEvents:
     GameStart = pygame.USEREVENT + 2
     Playing = pygame.USEREVENT + 3
     GameOver = pygame.USEREVENT + 4
-    BuzzKill = pygame.USEREVENT + 5
 
     def start(self, eventid, milliseconds=1000):
         pygame.time.set_timer(eventid, int(milliseconds))
@@ -188,7 +183,7 @@ class GameStart(State):
         lives = "Lives: " + str(self.lives)
         score = "Score: " + str(self.score)
         self.ui.draw_text(screen, lives, location=(W/10, H/10), align=-1)
-        self.ui.draw_text(screen, score, location=(9 * W/10, H/10), align=1)
+        self.ui.draw_text(screen, score, location=(9*W/10, H/10), align=1)
 
 
 class Playing(State):
@@ -197,176 +192,53 @@ class Playing(State):
         self.ui = UI(self, Jules_UIContext)
         self.nextState = None
         self.eventid = TimerEvents.Playing
-        self.eventid2 = TimerEvents.BuzzKill
         self.score = score
         self.lives = lives
         self.penalties = penalties
         self.countdown = 5 * 1000
         self.penalties_per_life = 3
         self.start_time = pygame.time.get_ticks()
-        self.squares = []
-        self.bonus_color = self.rand_color()
-        self.penalty_color = self.bonus_color
-        while self.penalty_color == self.bonus_color:
-            self.penalty_color = self.rand_color()
-        self.limit = 2 * 1000
 
     def start(self):
         self.start_time = pygame.time.get_ticks()
         TimerEvents().start(eventid=self.eventid, milliseconds=self.countdown)
-        TimerEvents().start(eventid=self.eventid2, milliseconds=self.limit)
         State.start(self)
 
     def handle(self, event):
-        if event.type == self.eventid:
-            self.bonus_color = self.rand_color()
-            self.penalty_color = self.bonus_color
-            while self.penalty_color == self.bonus_color:
-                self.penalty_color = self.rand_color()
-            self.start_time = pygame.time.get_ticks()
-            TimerEvents().start(eventid=self.eventid,
-                                milliseconds=self.countdown)
-
-        elif event.type == self.eventid2:
-            if self.penalties >= self.penalties_per_life - 1:
-                if self.lives > 1:
-                    self.nextState = lambda: GameStart(self.lives - 1,
-                                                       self.score)
-                else:
-                    self.nextState = lambda: GameOver(self.score)
-            else:
-                self.nextState = lambda: Playing(self.lives, self.score,
-                                                 self.penalties + 1)
-            self.transition()
-
-        elif event.type == pygame.MOUSEBUTTONDOWN:
-            for square in self.squares:
-                if square[3].collidepoint(event.pos):
-                    self.destroy(square)
-                    TimerEvents().start(eventid=self.eventid2,
-                                        milliseconds=self.limit)
-                    if square[2] == self.bonus_color:
-                        self.score += 200
-                    elif square[2] == self.penalty_color:
-                        if self.penalties >= self.penalties_per_life - 1:
-                            if self.lives > 1:
-                                self.nextState = lambda: GameStart(
-                                                        self.lives - 1,
-                                                        self.score)
-                            else:
-                                self.nextState = lambda: GameOver(
-                                                        self.score)
-                        else:
-                            self.nextState = lambda: Playing(self.lives,
-                                                        self.score - 200,
-                                                        self.penalties + 1)
-                        self.transition()
-                    else:
-                        self.score += 25
+        pass
 
     def setup(self, screen):
-        for i in range(20):
-            self.spawn()
+        pass
 
     def rand_pos(self, side):
-        xpos = random.randrange(side, W - side)
-        ypos = random.randrange(2.5 * H/10 + side, H - side)
-        pos = (xpos, ypos)
-        rect = pygame.Rect(pos, (side, side))
-        return pos, rect
-
-    def is_unique(self, rect):
-        if len(self.squares) == 0:
-            return True
-        for square in self.squares:
-            if rect.colliderect(square[3]):
-                return False
-        return True
+        pass
 
     def rand_color(self):
-        return random.choice([RED, GREEN, BLUE, YELLOW, LTBLUE, PURPLE, LIME,
-                              VIOLET, PINK, NAVY])
+        pass
 
     def rand_vel(self):
-        xvel = random.choice([-5,-4,-3,3,4,5])
-        yvel = random.choice([-5,-4,-3,3,4,5])
-        vel = (xvel, yvel)
-        return vel
+        pass
 
     def destroy(self, square):
-        self.squares.remove(square)
-        self.spawn()
+        pass
 
     def spawn(self):
-        side = 50
-        pos, rect = self.rand_pos(side)
-        while not self.is_unique(rect):
-            pos, rect = self.rand_pos(side)
-        color = self.rand_color()
-        vel = self.rand_vel()
-        self.squares.append([pos, (side, side), color, rect, vel])
+        pass
 
     def get_time(self):
-        return ((self.countdown - \
-                (pygame.time.get_ticks() - self.start_time)) // 1000) + 1
+        return ((self.countdown - (pygame.time.get_ticks() - self.start_time)) // 1000) + 1
 
     def update(self, screen):
         # draw stats
-        time = "Next Change: " + str(self.get_time())
-        lives = "Lives: " + str(self.lives)
-        penalties = "Penalties: " + str(self.penalties) + " of " \
-                    + str(self.penalties_per_life)
-        score = "Score: " + str(self.score)
-        self.ui.draw_text(screen, lives, location=(W/10, H/10), align=-1)
-        self.ui.draw_text(screen, penalties, location=(W/10, 2*H/10), align=-1)
-        self.ui.draw_text(screen, score, location=(9 * W/10, H/10), align=1)
-        self.ui.draw_text(screen, time, location=(9 * W/10, 2 * H/10), align=1)
-        self.ui.draw_text(screen, 'Bonus', (3*W/10+20, H/10 - 60), align=-1)
-        self.ui.draw_text(screen, 'Penalty', (7*W/10-20, H/10 - 60), align=1)
 
         # update positions
-        for square in self.squares:
-            pos, vel = square[0], square[4]
-            pos = (pos[0] + vel[0], pos[1] + vel[1])
 
             # if near edges or barrier, reverse direction
-            side = square[1][0]
-            if pos[0] < 0:
-                pos = (0, pos[1])
-                vel = (vel[0] * -1, vel[1])
-            elif pos[0] > W - side:
-                pos = (W - side, pos[1])
-                vel = (vel[0] * -1, vel[1])
-
-            if pos[1] < 2.5 * H/10 + side:
-                pos = (pos[0], 2.5 * H/10 + side)
-                vel = (vel[0], vel[1] * -1)
-            elif pos[1] > H - side:
-                pos = (pos[0], H - side)
-                vel = (vel[0], vel[1] * -1)
 
             # update square data before going to next square
-            square[0] = pos
-            square[4] = vel
-            rect = square[3]
-            rect.topleft = pos
-            square[3] = rect
-
 
         # draw squares
-        screen.lock()
-        try:
-            for square in self.squares:
-                pos = square[0]
-                size = square[1]
-                color = square[2]
-                self.ui.draw_rect(screen, pos, size, color)
-            self.ui.draw_rect(screen, (3*W/10+50, H/10 - 15), (60, 60),
-                              self.bonus_color)
-            self.ui.draw_rect(screen, (6*W/10+10, H/10 - 15), (60, 60),
-                              self.penalty_color)
-        finally:
-            screen.unlock()
+        pass
 
 
 class GameOver(State):
@@ -416,7 +288,8 @@ class GameOver(State):
             pass
         else:
             size = (75, 50)
-            location = ((W/2) - (size[0] / 2), 6 * H/10)
+            location = ((W/2) - (size[0] / 2),
+                        6 * H/10)
             with self.ui.newcontext(UIContext(font_size=30, len_cap=3)):
                 self.ui.add_input(screen, "___",
                                   lambda text: self.input_text(text),
@@ -447,6 +320,7 @@ class Game:
         while current_state <> None:
             current_state.start()
             current_state = current_state.get_next_state()()
+
 
 def main():
     Game().start(SplashScreen)
