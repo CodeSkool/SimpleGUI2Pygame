@@ -1,41 +1,39 @@
 # 20 Questions - Pygame version
 
-import ui
-from state import State
-from filehelper import FileHelper
+from utilities_1 import state, pgxtra, filehelper, ui
 
 #The default question tree
 question_tree = ["human", None]
 
 
-class GameStart(State):
+class GameStart(state.State):
     #The location of the question tree file
     question_file = "questions.txt"
 
     def __init__(self):
-        State.__init__(self)
+        state.State.__init__(self)
         self.nextState = lambda: Playing(question_tree)
         self.next_state_type = None
         self.message = "Load previous question tree?"
 
     def yes(self):
         global question_tree
-        question_tree = FileHelper(GameStart.question_file).load()
+        question_tree = filehelper.FileHelper(GameStart.question_file).load()
         self.transition()
 
     def no(self):
         self.transition()
 
     def setup(self, screen):
-        self.ui.add_button(screen, "Yes", lambda btn: self.yes(), (10, self.ui.font + 15))
-        self.ui.add_button(screen, "No", lambda btn: self.no(), (120, self.ui.font + 15))
+        self.ui.add_button(screen, "Yes", lambda btn: self.yes(), (10, self.ui.context.font_size + 15))
+        self.ui.add_button(screen, "No", lambda btn: self.no(), (120, self.ui.context.font_size + 15))
     def update(self, screen):
         self.ui.draw_text(screen, self.message)
 
 
-class Playing(State):
+class Playing(state.State):
     def __init__(self, tree):
-        State.__init__(self)
+        state.State.__init__(self)
         self.next_state = self.get_next_state
         self.next_state_type = None
         self.tree = tree
@@ -54,9 +52,9 @@ class Playing(State):
 
     def setup(self, screen):
         self.ui.add_button(screen, "Yes", lambda btn: self.yes(),
-                           (10, self.ui.font + 15))
+                           (10, self.ui.context.font_size + 15))
         self.ui.add_button(screen, "No", lambda btn: self.no(),
-                           (120, self.ui.font + 15))
+                           (120, self.ui.context.font_size + 15))
 
     def update(self, screen):
         self.ui.draw_text(screen, self.get_question())
@@ -67,7 +65,7 @@ class Playing(State):
     def get_next_state(self):
         return self.next_state_type
 
-class Learning(State):
+class Learning(state.State):
     NAME_TEXT = "What is the name of the new animal?"
     DESCRIPTION_TEXT = "Enter an adjective that descibes the animal"
 
@@ -75,7 +73,7 @@ class Learning(State):
                 DESCRIPTION_TEXT]
 
     def __init__(self, tree, index, answers=None):
-        State.__init__(self)
+        state.State.__init__(self)
         self.tree = tree
         self.index = index
         if answers == None:
@@ -97,7 +95,7 @@ class Learning(State):
         self.tree[0] = descriptor
         self.tree[1] = {True:[new_name, None]}
         self.tree[1][False] = [false_branch, None]
-        FileHelper(GameStart.question_file).save(question_tree)
+        filehelper.FileHelper(GameStart.question_file).save(question_tree)
 
     def input_text(self, text):
         self.answers.append(text)
@@ -107,23 +105,23 @@ class Learning(State):
         self.ui.add_input(screen,
                           Learning.messages[self.index],
                           lambda text: self.input_text(text),
-                          (10, self.ui.font + 15),
+                          (10, self.ui.context.font_size + 15),
                           (400, 25),
                           )
 
     def update(self, screen):
         left = 300
-        top = self.ui.font
+        top = self.ui.context.font_size
         width = 200
         height = 50
         self.ui.draw_text(screen, Learning.messages[self.index])
         self.ui.add_label(screen,
                           "(Remember to press enter after typing your answer)",
-                          location=(10, 2 * self.ui.font + 20))
+                          location=(10, 2 * self.ui.context.font_size + 20))
 
-class GameOver(State):
+class GameOver(state.State):
     def __init__(self, message):
-        State.__init__(self)
+        state.State.__init__(self)
         self.nextState = lambda: Playing(question_tree)
         self.next_state_type = None
         self.message = message
@@ -136,14 +134,35 @@ class GameOver(State):
 
     def setup(self, screen):
         self.ui.add_button(screen, "Yes", lambda btn: self.yes(),
-                           (10, 2 * self.ui.font + 15))
+                           (10, 2 * self.ui.context.font_size + 15))
         self.ui.add_button(screen, "No", lambda btn: self.no(),
-                           (120, 2 * self.ui.font + 15))
+                           (120, 2 * self.ui.context.font_size + 15))
 
     def update(self, screen):
         self.ui.draw_text(screen, self.message)
-        self.ui.draw_text(screen, "Play again?", (10, self.ui.font + 15))
+        self.ui.draw_text(screen, "Play again?", (10, self.ui.context.font_size + 15))
 
-question_tree = ["human", None]
-new_game = GameStart()
-new_game.start()
+class Game:
+    def start(self, init_state):
+        current_state = init_state()
+        while current_state <> None:
+            current_state.start()
+            current_state = current_state.get_next_state()()
+
+
+def main():
+    global question_tree
+    question_tree = ["human", None]
+    Game().start(GameStart)
+
+    # Tests
+    #Game().start(lambda: Playing(question_tree))
+    #Game().start(lambda: GameOver("You win"))
+    #Game().start(lambda: GameOver("I win"))
+
+
+
+
+if __name__ == '__main__':
+    main()
+

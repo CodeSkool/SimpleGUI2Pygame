@@ -8,11 +8,12 @@
 # Licence:     DBAD (refer to http://www.dbad-license.org/)
 #-------------------------------------------------------------------------------
 
+from utilities_1 import pgxtra
 import random
 import string
 import sys
 import pygame
-import pgxtra
+
 
 # Filename of word list
 filename = 'techwords.txt'
@@ -45,8 +46,8 @@ class FileHelper:
 class UI:
     def __init__(self, target, title="", width=W,
                  height=H, font=40,
-                 bg_color="black",
-                 fg_color="lightblue"):
+                 bg_color=pygame.Color("black"),
+                 fg_color=pygame.Color("lightblue")):
         self.target = target
         self.title = title
         self.width = width
@@ -69,7 +70,7 @@ class UI:
         self.surface.blit(self.screen, (0,0))
 
         while True:
-            self.screen.fill(pygame.Color(self.bg_color))
+            self.screen.fill(self.bg_color)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                    self.quit()
@@ -100,7 +101,7 @@ class UI:
     def draw_text(self, screen, message, location):
         if pygame.font:
             font = pygame.font.Font(None, self.font)
-            text = font.render(message, 1, pygame.Color(self.fg_color))
+            text = font.render(message, 1, self.fg_color)
             textpos = text.get_rect()
             textpos.centerx = location[0]
             textpos.centery = location[1]

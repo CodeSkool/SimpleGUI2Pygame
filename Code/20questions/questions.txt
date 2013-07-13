@@ -17,6 +17,15 @@ S'a gnat'
 p9
 aNasI01
 (lp10
-S'a fly'
+S'stingy'
 p11
-aNasasa.
+a(dp12
+I00
+(lp13
+S'a fly'
+p14
+aNasI01
+(lp15
+S'a wasp'
+p16
+aNasasasa.

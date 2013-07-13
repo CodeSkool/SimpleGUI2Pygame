@@ -30,7 +30,7 @@ class UIContext:
         self.display_flags = input_or_default(0, display_flags)
 
         # Font type and size. TTF required for packaging as .exe
-        self.font = input_or_default("Comfortaa-Regular.ttf", font)
+        self.font = input_or_default("resources/Comfortaa-Regular.ttf", font)
         self.font_size = input_or_default(20, font_size)
 
         # Background and foreground pygame color objects

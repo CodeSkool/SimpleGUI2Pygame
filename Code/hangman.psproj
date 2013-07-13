@@ -49,11 +49,11 @@ Count=5
 
 [Project\ChildNodes\Node0\ChildNodes\Node2]
 ClassName=TProjectFileNode
-FileName=$[Project-Path]20questions\20_questions.py
+FileName=$[Project-Path]20questions\Hangman1.1.py
 
 [Project\ChildNodes\Node0\ChildNodes\Node3]
 ClassName=TProjectFileNode
-FileName=$[Project-Path]20questions\questions.txt
+FileName=$[Project-Path]20questions\techwords.txt
 
 [Project\ChildNodes\Node0\ChildNodes]
 Count=4
@@ -66,7 +66,7 @@ ClassName=TProjectRunConfiguationNode
 Name=Run
 
 [Project\ChildNodes\Node1\ChildNodes\Node0\RunConfig]
-ScriptName=C:\Dev\Python\CodeSkool101\SimpleGUI2Pygame\Code\20questions\20_questions.py
+ScriptName=C:\Dev\Python\CodeSkool101\SimpleGUI2Pygame\Code\20questions\hangman.py
 Description=Run
 EngineType=peRemote
 ReinitializeBeforeRun=TRUE

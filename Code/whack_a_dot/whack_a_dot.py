@@ -320,10 +320,12 @@ class Game:
 
 
 def main():
-    Game().start(ScreenSaver)
-    #ScreenSaver().start()
-    #Playing().start()
-    #GameOver(0).start()
+    #Game().start(ScreenSaver)
+
+    # Tests
+    #Game().start(Playing)
+    #Game().start(GameStart)
+    Game().start(lambda: GameOver(0))
 
 
 
