@@ -15,7 +15,7 @@ Name=resources
 
 [Project\ChildNodes\Node0\ChildNodes\Node0\ChildNodes\Node0]
 ClassName=TProjectFileNode
-FileName=C:\Dev\Python\CodeSkool101\SimpleGUI2Pygame\Code\Utilities\Comfortaa-Regular.ttf
+FileName=$[Project-Path]whack_a_dot\resources\Comfortaa-Regular.ttf
 
 [Project\ChildNodes\Node0\ChildNodes\Node0\ChildNodes]
 Count=1
@@ -26,26 +26,30 @@ Name=utilities
 
 [Project\ChildNodes\Node0\ChildNodes\Node1\ChildNodes\Node0]
 ClassName=TProjectFileNode
-FileName=C:\Dev\Python\CodeSkool101\SimpleGUI2Pygame\Code\Utilities\filehelper.py
+FileName=$[Project-Path]Timers\utilities_1\__init__.py
 
 [Project\ChildNodes\Node0\ChildNodes\Node1\ChildNodes\Node1]
 ClassName=TProjectFileNode
-FileName=C:\Dev\Python\CodeSkool101\SimpleGUI2Pygame\Code\Utilities\pgxtra.py
+FileName=$[Project-Path]Timers\utilities_1\filehelper.py
 
 [Project\ChildNodes\Node0\ChildNodes\Node1\ChildNodes\Node2]
 ClassName=TProjectFileNode
-FileName=C:\Dev\Python\CodeSkool101\SimpleGUI2Pygame\Code\Utilities\state.py
+FileName=$[Project-Path]Timers\utilities_1\pgxtra.py
 
 [Project\ChildNodes\Node0\ChildNodes\Node1\ChildNodes\Node3]
 ClassName=TProjectFileNode
-FileName=C:\Dev\Python\CodeSkool101\SimpleGUI2Pygame\Code\Utilities\ui.py
+FileName=$[Project-Path]Timers\utilities_1\state.py
+
+[Project\ChildNodes\Node0\ChildNodes\Node1\ChildNodes\Node4]
+ClassName=TProjectFileNode
+FileName=$[Project-Path]Timers\utilities_1\ui.py
 
 [Project\ChildNodes\Node0\ChildNodes\Node1\ChildNodes]
-Count=4
+Count=5
 
 [Project\ChildNodes\Node0\ChildNodes\Node2]
 ClassName=TProjectFileNode
-FileName=$[Project-Path]whack_a_dot.py
+FileName=$[Project-Path]Timers\whack_a_dot.py
 
 [Project\ChildNodes\Node0\ChildNodes]
 Count=3
@@ -55,10 +59,10 @@ ClassName=TProjectRunConfiguationsNode
 
 [Project\ChildNodes\Node1\ChildNodes\Node0]
 ClassName=TProjectRunConfiguationNode
-Name=First
+Name=Run
 
 [Project\ChildNodes\Node1\ChildNodes\Node0\RunConfig]
-ScriptName=C:\Dev\Python\CodeSkool101\SimpleGUI2Pygame\Code\Timers\whack_a_dot.py
+ScriptName=C:\Dev\Python\CodeSkool101\SimpleGUI2Pygame\code\whack_a_dot\whack_a_dot.py
 Description=Debug
 EngineType=peRemote
 ReinitializeBeforeRun=TRUE

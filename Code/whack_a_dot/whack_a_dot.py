@@ -16,7 +16,7 @@
 # Display the final score, record the user's initials if they got a high score.
 # Display the logo / high-score list loop
 
-import filehelper, ui, state, pgxtra
+from utilities_1 import state, pgxtra, filehelper, ui
 import pygame, pygame.event, pygame.time
 import random, itertools, functools
 
