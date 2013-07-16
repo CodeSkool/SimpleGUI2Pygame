@@ -1,7 +1,7 @@
 #!/usr/local/bin/python
 
 #-------------------------------------------------------------------------------
-# Name:        pgxtras
+# Name:        pgxtra
 # Purpose:     Provides extra controls for pygame.
 # Author:      Jules
 # Created:     06/29/2013
