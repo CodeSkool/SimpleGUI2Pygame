@@ -29,7 +29,7 @@ class PgxtraWidget(pygame.sprite.Sprite):
         self.enabled = True
         pygame.mouse.set_visible(True)
 
-    def draw(self):
+    def draw(self, screen):
         pass
 
     def is_active(self):
@@ -57,13 +57,11 @@ class PgxtraWidget(pygame.sprite.Sprite):
 class Button(PgxtraWidget):
     '''Creates a button on a solid colored rectangular background.
         Attributes:
-           screen = display screen
            label = string of text on widget
            text_color = rgb color value of label text
            bg_color = rgb color value of widget background
            position = top left corner of widget
-           btn_size = size of button (note that a 2 pixel/side border will be
-                added to overall size of button to include hover outline)
+           btn_size = size of button
            func_call = function that will handle widget event
            font_size = default set to 40
            len_cap = default set to 0, character cap on label
@@ -76,26 +74,24 @@ class Button(PgxtraWidget):
         self.enabled = True if the widget is active, default is True
         '''
 
-    def __init__(self, screen, label, text_color, bg_color, position,
+    def __init__(self, label, text_color, bg_color, position,
                  btn_size, func_call, font_size=40, len_cap=0):
         PgxtraWidget.__init__(self)
-        self.screen = screen
         self.label = label
         self.default_label = label
         self.text_color = text_color
         self.bg_color = bg_color
         self.orig_bg_color = bg_color
         self.pos = position
-        self.size = btn_size
+        self.inner_pos = position[0] + 2, position[1] + 2
+        self.inner_size = btn_size[0] - 4, btn_size[1] - 4
+        self.outer_size = btn_size
         self.func_call = func_call
         self.font_size = font_size
         self.len_cap = len_cap
-        self.rect = pygame.Rect(self.pos, self.size)
+        self.rect = pygame.Rect(self.inner_pos, self.inner_size)
         self.hover = False
-
-        pos = self.pos[0] - 2, self.pos[1] - 2
-        size = self.size[0] + 4, self.size[1] + 4
-        self.outline_rect = pygame.Rect(pos, size)
+        self.outline_rect = pygame.Rect(self.pos, self.outer_size)
 
         self.render_label()
 
@@ -107,21 +103,21 @@ class Button(PgxtraWidget):
         text = font.render(self.label, 1, self.text_color)
         text_press = font.render(self.label, 1, self.bg_color)
         size = font.size(self.label)
-        textpos = ((self.size[0] - size[0]) // 2 + self.pos[0],
-                   (self.size[1] - size[1]) // 2 + self.pos[1])
+        textpos = ((self.inner_size[0] - size[0]) // 2 + self.inner_pos[0],
+                   (self.inner_size[1] - size[1]) // 2 + self.inner_pos[1])
         self.text_norm = text
         self.text_press = text_press
         self.text = self.text_norm
         self.textpos = textpos
 
-    def draw(self):
+    def draw(self, screen):
         if self.hover:
-            pygame.draw.rect(self.screen, self.bg_color, self.outline_rect, 1)
+            pygame.draw.rect(screen, self.bg_color, self.outline_rect, 1)
         else:
-            pygame.draw.rect(self.screen, self.text_color, self.outline_rect, 1)
+            pygame.draw.rect(screen, self.text_color, self.outline_rect, 1)
 
-        pygame.draw.rect(self.screen, self.bg_color, self.rect)
-        self.screen.blit(self.text, self.textpos)
+        pygame.draw.rect(screen, self.bg_color, self.rect)
+        screen.blit(self.text, self.textpos)
 
     def is_active(self):
         return self.enabled
@@ -192,7 +188,6 @@ class SpecialButton(PgxtraWidget):
         button.disable().
 
         Attributes:
-            screen = display screen
             image = image of widget (pre-loaded)
             screen_position = top left corner where widget will reside on screen
             btn_size = size of button
@@ -213,11 +208,10 @@ class SpecialButton(PgxtraWidget):
         self.enabled = True if the widget is active, default is True
         '''
 
-    def __init__(self, screen, image, screen_position, btn_size, img_pos,
+    def __init__(self, image, screen_position, btn_size, img_pos,
                  func_call, hover_offset=(0,0), press_offset=(0,0),
                  disable_offset=(0,0)):
         PgxtraWidget.__init__(self)
-        self.screen = screen
         self.image = image
         self.pos = screen_position
         self.img_pos = img_pos
@@ -243,18 +237,18 @@ class SpecialButton(PgxtraWidget):
                                   self.img_pos[1] + disable_offset[1])
         self.disable_rect = pygame.Rect(self.disable_image_pos, self.size)
 
-    def draw(self):
+    def draw(self, screen):
         if not self.enabled:
-            self.screen.blit(self.image, self.pos, self.disable_rect)
+            screen.blit(self.image, self.pos, self.disable_rect)
 
         elif self.pressed and self.hover:
-            self.screen.blit(self.image, self.pos, self.press_rect)
+            screen.blit(self.image, self.pos, self.press_rect)
 
         elif self.hover:
-            self.screen.blit(self.image, self.pos, self.hover_rect)
+            screen.blit(self.image, self.pos, self.hover_rect)
 
         else:
-            self.screen.blit(self.image, self.pos, self.rect)
+            screen.blit(self.image, self.pos, self.rect)
 
     def is_active(self):
         return self.enabled
@@ -307,7 +301,6 @@ class SpecialButton(PgxtraWidget):
 class InputField(PgxtraWidget):
     ''' Creates an input field on a solid colored rectangular background.
         Attributes:
-            screen = display screen
             label = string of text on widget
             text_color = rgb color value of label text
             bg_color = rgb color value of widget background
@@ -336,10 +329,9 @@ class InputField(PgxtraWidget):
         self.enabled = True if the widget is active, default is True
         '''
 
-    def __init__(self, screen, label, text_color, bg_color, position,
+    def __init__(self, label, text_color, bg_color, position,
                  fld_size, func_call, font_size=40, len_cap=0, focus=False):
         PgxtraWidget.__init__(self)
-        self.screen = screen
         self.label = label
         self.default_label = label[:]
         self.text_color = text_color
@@ -371,7 +363,7 @@ class InputField(PgxtraWidget):
         self.text = text
         self.textpos = textpos
 
-    def draw(self):
+    def draw(self, screen):
         if self.focused:
             time = pygame.time.get_ticks()
             if time % (self.blink_rate * 2) < self.blink_rate:
@@ -383,8 +375,8 @@ class InputField(PgxtraWidget):
 
         text = self.label + self.cursor
         self.render_text(text)
-        pygame.draw.rect(self.screen, self.bg_color, self.rect)
-        self.screen.blit(self.text, self.textpos)
+        pygame.draw.rect(screen, self.bg_color, self.rect)
+        screen.blit(self.text, self.textpos)
 
     def is_active(self):
         return self.enabled
@@ -539,7 +531,7 @@ def test():
     RED =   pygame.Color('red')
 
     # Set the height, width and caption of the screen
-    size = [800, 500]
+    size = [600, 450]
     global screen
     screen = pygame.display.set_mode(size)
     pygame.display.set_caption("Example")
@@ -549,36 +541,36 @@ def test():
     clock = pygame.time.Clock()
 
     # Create 2 buttons
-    btn1 = Button(screen, 'Play', BLACK, RED, (50, 25), (200, 50), print_clicked)
-    btn2 = Button(screen, 'Load Save Point', WHITE, RED, (50, 125), (200, 50),
+    btn1 = Button('Play', BLACK, RED, (50, 25), (200, 50), print_clicked)
+    btn2 = Button('Load Save Point', WHITE, RED, (50, 125), (200, 50),
                   print_clicked, 24)
 
     # Create 1 input field
-    inp_fld1 = InputField(screen, 'Enter Name', BLUE, WHITE, (50, 225), (200, 50),
+    inp_fld1 = InputField('Enter Name', BLUE, WHITE, (50, 225), (200, 50),
                          enter_field, len_cap = 12, focus=True)
 
-    inp_fld2 = InputField(screen, 'Enter Color', BLUE, WHITE, (50, 325), (200, 50),
+    inp_fld2 = InputField('Enter Color', BLUE, WHITE, (50, 325), (200, 50),
                          enter_field, len_cap = 12)
 
     response = ""
 
     # Create 4 special buttons if file is present
     try:
-        button_pic = pygame.image.load('prettybuttons.png')
+        button_pic = pygame.image.load('prettybuttons.png').convert_alpha()
 
-        spc_btn1 = SpecialButton(screen, button_pic, (400, 25), (226, 75),
+        spc_btn1 = SpecialButton(button_pic, (300, 25), (226, 75),
                                  (8, 92), print_clicked, hover_offset=(240, 0),
                                  press_offset=(480, 0), disable_offset=(720, 0))
 
-        spc_btn2 = SpecialButton(screen, button_pic, (400, 125), (226, 75),
+        spc_btn2 = SpecialButton(button_pic, (300, 125), (226, 75),
                                  (8, 428), print_clicked, hover_offset=(240, 0),
                                  press_offset=(480, 0), disable_offset=(720, 0))
 
-        spc_btn3 = SpecialButton(screen, button_pic, (400, 225), (226, 75),
+        spc_btn3 = SpecialButton(button_pic, (300, 225), (226, 75),
                                  (8, 680), print_clicked, hover_offset=(240, 0),
                                  press_offset=(480, 0), disable_offset=(720, 0))
 
-        spc_btn4 = SpecialButton(screen, button_pic, (400, 325), (226, 75),
+        spc_btn4 = SpecialButton(button_pic, (300, 325), (226, 75),
                                  (8, 848), print_clicked, hover_offset=(240, 0),
                                  press_offset=(480, 0), disable_offset=(720, 0))
 
@@ -605,7 +597,7 @@ def test():
 
         # Iterate through all widgets and draw them
         for widg in pgutility.get_widgets():
-            widg.draw()
+            widg.draw(screen)
 
         # Display all drawn items to the screen
         pygame.display.flip()
