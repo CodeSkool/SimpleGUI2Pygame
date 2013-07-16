@@ -10,6 +10,7 @@
 #-------------------------------------------------------------------------------
 
 import pygame, sys
+import threading
 
 LEGAL_KEYS = {pygame.K_q: 'q', pygame.K_w: 'w', pygame.K_e: 'e',
               pygame.K_r: 'r', pygame.K_t: 't', pygame.K_y: 'y',
@@ -23,11 +24,21 @@ LEGAL_KEYS = {pygame.K_q: 'q', pygame.K_w: 'w', pygame.K_e: 'e',
 
 
 class PgxtraWidget(pygame.sprite.Sprite):
-
+    _pgutility = None
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         self.enabled = True
         pygame.mouse.set_visible(True)
+        # add widget to master list (do it in the base class)
+        self.pgutility().add_widget(self)
+
+    def pgutility(self):
+        """The _pgutility should be the same for all PgxtraWidget objects."""
+        if PgxtraWidget._pgutility == None: # Check for None before locking
+            with threading.Lock(): # Lock the thread while we create the helper
+                if PgxtraWidget._pgutility == None: # Check for None again after locking
+                    PgxtraWidget._pgutility = PGxtraUtility() # Create the helper
+        return PgxtraWidget._pgutility
 
     def draw(self):
         pass
@@ -98,9 +109,6 @@ class Button(PgxtraWidget):
         self.outline_rect = pygame.Rect(pos, size)
 
         self.render_label()
-
-        # add widget to master list
-        pgutility.add_button(self)
 
     def render_label(self):
         font = pygame.font.Font(None, self.font_size)
@@ -228,9 +236,6 @@ class SpecialButton(PgxtraWidget):
         self.hover = False
         self.pressed = False
 
-        # add widget to master list
-        pgutility.add_special_button(self)
-
         self.hover_image_pos = (self.img_pos[0] + hover_offset[0],
                                 self.img_pos[1] + hover_offset[1])
         self.hover_rect = pygame.Rect(self.hover_image_pos, self.size)
@@ -262,7 +267,7 @@ class SpecialButton(PgxtraWidget):
     def mouse_release(self):
         if self.enabled and self.hover and self.pressed:
             self.func_call()
-        spc_buttons = pgutility.get_special_buttons()
+        spc_buttons = self.pgutility().get_widgets(SpecialButton)
         for button in spc_buttons:
             button.pressed = False
 
@@ -355,9 +360,6 @@ class InputField(PgxtraWidget):
         self.focused = focus
 
         self.render_text(self.label)
-
-        # add widget to master list
-        pgutility.add_input_field(self)
 
     def render_text(self, rend_text):
         font = pygame.font.Font(None, self.font_size)
@@ -454,7 +456,7 @@ class InputField(PgxtraWidget):
                 if surface_rect <> None and surface_rect.collidepoint(pos):
                     self.mouse_release()
                     if self.enable:
-                        fields = pgutility.get_input_fields()
+                        fields = self.pgutility().get_widgets(InputField)
                         for field in fields:
                             if field != self:
                                 field.remove_focus()
@@ -486,135 +488,124 @@ class InputField(PgxtraWidget):
 
 
 class PGxtraUtility:
+    """Ideally, PGxtraUtility should be a singleton - i.e. only one such object
+    can exist at any time. But for now, we will not enforce this - not until we
+    arrive at a model that really works well.
+    """
     def __init__(self):
-        '''Creates collection of all pgxtra control widgets. To access lists
-        from other locations, use pgutility.get_...() methods.'''
+        """Creates dictionary of all pgxtra control widgets, keyed by type."""
+        self.widgets = {}
 
-        self.widgets = []
-        self.buttons = []
-        self.input_fields = []
-        self.special_buttons = []
-        self.exists = True
+    def add_widget(self, widget):
+        """Add the widget. Each widget is categorized by it's type."""
+        self.widgets.setdefault(widget.__class__, []).append(widget)
 
-    def add_button(self, button):
-        self.buttons.append(button)
-        self.widgets.append(button)
+    def get_widgets(self, widget_type=None):
+        """Return all the widgets. If widget_type is not None, returns only
+        the widgets of the specified type.
+        """
+        returnVal = []
+        if widget_type <> None and widget_type in self.widgets:
+            returnVal.extend(self.widgets[widget_type])
+        else:
+            for values in self.widgets.itervalues():
+                returnVal.extend(values)
+        return returnVal
 
-    def add_input_field(self, input_field):
-        self.input_fields.append(input_field)
-        self.widgets.append(input_field)
+class Tester():
+    def print_clicked(self):
+        print "Clicked"
 
-    def add_special_button(self, special_button):
-        self.special_buttons.append(special_button)
-        self.widgets.append(special_button)
+    def enter_field(self, obj):
+        print obj, "entered"
 
-    def get_widgets(self):
-        return self.widgets
+    def test(self):
+        # Initialize pygame
+        pygame.init()
 
-    def get_buttons(self):
-        return self.buttons
+        # Define the colors we will use in RGB format
+        BLACK = pygame.Color('black')
+        WHITE = pygame.Color('white')
+        BLUE =  pygame.Color('blue')
+        GREEN = pygame.Color('green')
+        RED =   pygame.Color('red')
 
-    def get_input_fields(self):
-        return self.input_fields
+        # Set the height, width and caption of the screen
+        size = [800, 500]
+        global screen
+        screen = pygame.display.set_mode(size)
+        pygame.display.set_caption("Example")
 
-    def get_special_buttons(self):
-        return self.special_buttons
+        # Loop until the user clicks the close button.
+        done = False
+        clock = pygame.time.Clock()
 
+        # Create 2 buttons
+        btn1 = Button(screen, 'Play', BLACK, RED, (50, 25), (200, 50), self.print_clicked)
+        btn2 = Button(screen, 'Load Save Point', WHITE, RED, (50, 125), (200, 50),
+                      self.print_clicked, 24)
 
-def print_clicked():
-    print "Clicked"
+        # Create 1 input field
+        inp_fld1 = InputField(screen, 'Enter Name', BLUE, WHITE, (50, 225), (200, 50),
+                             lambda obj: self.enter_field(obj), len_cap = 12, focus=True)
 
-def enter_field(obj):
-    print obj, "entered"
+        inp_fld2 = InputField(screen, 'Enter Color', BLUE, WHITE, (50, 325), (200, 50),
+                             lambda obj: self.enter_field(obj), len_cap = 12)
 
-def test():
-    # Initialize pygame
-    pygame.init()
+        response = ""
 
-    # Define the colors we will use in RGB format
-    BLACK = pygame.Color('black')
-    WHITE = pygame.Color('white')
-    BLUE =  pygame.Color('blue')
-    GREEN = pygame.Color('green')
-    RED =   pygame.Color('red')
+        # Create 4 special buttons if file is present
+        try:
+            button_pic = pygame.image.load('prettybuttons.png')
 
-    # Set the height, width and caption of the screen
-    size = [800, 500]
-    global screen
-    screen = pygame.display.set_mode(size)
-    pygame.display.set_caption("Example")
+            spc_btn1 = SpecialButton(screen, button_pic, (400, 25), (226, 75),
+                                     (8, 92), self.print_clicked, hover_offset=(240, 0),
+                                     press_offset=(480, 0), disable_offset=(720, 0))
 
-    # Loop until the user clicks the close button.
-    done = False
-    clock = pygame.time.Clock()
+            spc_btn2 = SpecialButton(screen, button_pic, (400, 125), (226, 75),
+                                     (8, 428), self.print_clicked, hover_offset=(240, 0),
+                                     press_offset=(480, 0), disable_offset=(720, 0))
 
-    # Create 2 buttons
-    btn1 = Button(screen, 'Play', BLACK, RED, (50, 25), (200, 50), print_clicked)
-    btn2 = Button(screen, 'Load Save Point', WHITE, RED, (50, 125), (200, 50),
-                  print_clicked, 24)
+            spc_btn3 = SpecialButton(screen, button_pic, (400, 225), (226, 75),
+                                     (8, 680), self.print_clicked, hover_offset=(240, 0),
+                                     press_offset=(480, 0), disable_offset=(720, 0))
 
-    # Create 1 input field
-    inp_fld1 = InputField(screen, 'Enter Name', BLUE, WHITE, (50, 225), (200, 50),
-                         enter_field, len_cap = 12, focus=True)
+            spc_btn4 = SpecialButton(screen, button_pic, (400, 325), (226, 75),
+                                     (8, 848), self.print_clicked, hover_offset=(240, 0),
+                                     press_offset=(480, 0), disable_offset=(720, 0))
 
-    inp_fld2 = InputField(screen, 'Enter Color', BLUE, WHITE, (50, 325), (200, 50),
-                         enter_field, len_cap = 12)
+            spc_btn1.disable()
 
-    response = ""
-
-    # Create 4 special buttons if file is present
-    try:
-        button_pic = pygame.image.load('prettybuttons.png')
-
-        spc_btn1 = SpecialButton(screen, button_pic, (400, 25), (226, 75),
-                                 (8, 92), print_clicked, hover_offset=(240, 0),
-                                 press_offset=(480, 0), disable_offset=(720, 0))
-
-        spc_btn2 = SpecialButton(screen, button_pic, (400, 125), (226, 75),
-                                 (8, 428), print_clicked, hover_offset=(240, 0),
-                                 press_offset=(480, 0), disable_offset=(720, 0))
-
-        spc_btn3 = SpecialButton(screen, button_pic, (400, 225), (226, 75),
-                                 (8, 680), print_clicked, hover_offset=(240, 0),
-                                 press_offset=(480, 0), disable_offset=(720, 0))
-
-        spc_btn4 = SpecialButton(screen, button_pic, (400, 325), (226, 75),
-                                 (8, 848), print_clicked, hover_offset=(240, 0),
-                                 press_offset=(480, 0), disable_offset=(720, 0))
-
-        spc_btn1.disable()
-
-    except:
-        print "Unable to test special buttons. File 'prettybuttons.png' missing"
+        except:
+            print "Unable to test special buttons. File 'prettybuttons.png' missing"
 
 
 
-    while not done:
-        # Limit fps to 30
-        clock.tick(30)
+        while not done:
+            # Limit fps to 30
+            clock.tick(30)
 
-        # Check for applicable events
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
+            # Check for applicable events
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
 
-            else:
-                for widg in pgutility.get_widgets():
-                    widg.check_event(event)
+                else:
+                    for widg in PgxtraWidget._pgutility.get_widgets():
+                        widg.check_event(event)
 
-        # Iterate through all widgets and draw them
-        for widg in pgutility.get_widgets():
-            widg.draw()
+            # Iterate through all widgets and draw them
+            for widg in PgxtraWidget._pgutility.get_widgets():
+                widg.draw()
 
-        # Display all drawn items to the screen
-        pygame.display.flip()
+            # Display all drawn items to the screen
+            pygame.display.flip()
 
 def main():
-    test()
+    Tester().test()
 
-global pgutility
-pgutility = PGxtraUtility()
+
 
 if __name__ == '__main__':
     main()
