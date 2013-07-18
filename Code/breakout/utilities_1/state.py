@@ -17,7 +17,7 @@ class State:
         """Perform any cleanup before exiting the current state."""
         pass
 
-    def setup(self, screen):
+    def setup(self):
         """Hook: Create objects that know how to draw themselves."""
         pass
 

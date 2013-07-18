@@ -535,13 +535,15 @@ class Tester():
         clock = pygame.time.Clock()
 
         # Create 2 buttons
-        btn1 = Button('Play', BLACK, RED, (50, 25), (200, 50), self.print_clicked)
+        btn1 = Button('Play', BLACK, RED, (50, 25), (200, 50),
+                      self.print_clicked)
         btn2 = Button('Load Save Point', WHITE, RED, (50, 125), (200, 50),
                       self.print_clicked, 24)
 
         # Create 1 input field
         inp_fld1 = InputField('Enter Name', BLUE, WHITE, (50, 225), (200, 50),
-                             lambda obj: self.enter_field(obj), len_cap = 12, focus=True)
+                             lambda obj: self.enter_field(obj), len_cap = 12,
+                             focus=True)
 
         inp_fld2 = InputField('Enter Color', BLUE, WHITE, (50, 325), (200, 50),
                              lambda obj: self.enter_field(obj), len_cap = 12)
@@ -553,25 +555,33 @@ class Tester():
             button_pic = pygame.image.load('prettybuttons.png')
 
             spc_btn1 = SpecialButton(button_pic, (400, 25), (226, 75),
-                                     (8, 92), self.print_clicked, hover_offset=(240, 0),
-                                     press_offset=(480, 0), disable_offset=(720, 0))
+                                     (8, 92), self.print_clicked,
+                                     hover_offset=(240, 0),
+                                     press_offset=(480, 0),
+                                     disable_offset=(720, 0))
 
             spc_btn2 = SpecialButton(button_pic, (400, 125), (226, 75),
-                                     (8, 428), self.print_clicked, hover_offset=(240, 0),
-                                     press_offset=(480, 0), disable_offset=(720, 0))
+                                     (8, 428), self.print_clicked,
+                                     hover_offset=(240, 0),
+                                     press_offset=(480, 0),
+                                     disable_offset=(720, 0))
 
             spc_btn3 = SpecialButton(button_pic, (400, 225), (226, 75),
-                                     (8, 680), self.print_clicked, hover_offset=(240, 0),
-                                     press_offset=(480, 0), disable_offset=(720, 0))
+                                     (8, 680), self.print_clicked,
+                                     hover_offset=(240, 0),
+                                     press_offset=(480, 0),
+                                     disable_offset=(720, 0))
 
             spc_btn4 = SpecialButton(button_pic, (400, 325), (226, 75),
-                                     (8, 848), self.print_clicked, hover_offset=(240, 0),
-                                     press_offset=(480, 0), disable_offset=(720, 0))
+                                     (8, 848), self.print_clicked,
+                                     hover_offset=(240, 0),
+                                     press_offset=(480, 0),
+                                     disable_offset=(720, 0))
 
             spc_btn1.disable()
 
         except:
-            print "Unable to test special buttons. File 'prettybuttons.png' missing"
+            print "Unable to test special buttons: 'prettybuttons.png' missing"
 
 
 
