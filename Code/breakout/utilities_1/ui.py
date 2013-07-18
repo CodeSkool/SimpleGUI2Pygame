@@ -73,7 +73,7 @@ class UI:
         pygame.display.set_caption(self.context.title)
 
         # set up the target
-        self.target.setup(self.screen)
+        self.target.setup()
 
         while True:
             if self.transitioning:
@@ -112,7 +112,7 @@ class UI:
     def draw(self):
         """Allow everything to draw itself."""
         for control in self.controls:
-            control.draw()
+            control.draw(self.screen)
         self.target.update(self.screen)
 
     def quit(self):
@@ -123,7 +123,7 @@ class UI:
             # always quit, even if there are exceptions
             quit()
 
-    def draw_text(self, screen, text, location=None, align=None):
+    def draw_text(self, text, location=None, align=None):
         """Draw the specified text to the screen at the specified location.
         Return the text surface.
         """
@@ -143,53 +143,51 @@ class UI:
             else:
                 textpos.right, textpos.y = location[0], location[1]
 
-            screen.blit(text, textpos)
+            self.screen.blit(text, textpos)
             return text
 
-    def add_label(self, screen, text, location=None):
+    def add_label(self, text, location=None):
         """Draw a label (same as draw_text).
         """
-        return self.draw_text(screen, text, location)
+        return self.draw_text(self.screen, text, location)
 
-    def add_input(self, screen, text, handler, location=None, size=None):
+    def add_input(self, text, handler, location=None, size=None):
         """Add a new InputField to the UI."""
         location = input_or_default(self.context.location, location)
         size = input_or_default(self.context.size, size)
 
-        textinput = pgxtra.InputField(screen, text,
-                                      self.context.bg_color,
-                                      self.context.fg_color,
-                                      location, size, handler,
-                                      self.context.font_size,
+        textinput = pgxtra.InputField(text, self.context.bg_color,
+                                      self.context.fg_color, location, size,
+                                      handler, self.context.font_size,
                                       self.context.len_cap)
         textinput.enabled = True
         self.controls.append(textinput)
         return textinput
 
-    def add_button(self, screen, text, handler, location=None, size=None):
+    def add_button(self, text, handler, location=None, size=None):
         """Add a new Button to the UI."""
         location = input_or_default(self.context.location, location)
         size = input_or_default(self.context.size, size)
 
-        button = pgxtra.Button(screen, text, self.context.bg_color,
+        button = pgxtra.Button(text, self.context.bg_color,
                                self.context.fg_color, location, size, handler,
                                self.context.font_size)
         button.enabled = True
         self.controls.append(button)
         return button
 
-    def draw_circle(self, screen, location=None, radius=10):
+    def draw_circle(self, location=None, radius=10):
         location = input_or_default(self.context.location, location)
 
-        return pygame.draw.circle(screen, self.context.fg_color, location,
+        return pygame.draw.circle(self.screen, self.context.fg_color, location,
                                   radius, self.context.line_width)
 
-    def draw_rect(self, screen, location=None, size=None, color=None):
+    def draw_rect(self, location=None, size=None, color=None):
         location = input_or_default(self.context.location, location)
         size = input_or_default(self.context.size, size)
         color = input_or_default(self.context.fg_color, color)
 
-        return pygame.draw.rect(screen, color, pygame.Rect(location, size))
+        return pygame.draw.rect(self.screen, color, pygame.Rect(location, size))
 
     # this will allow the "with" keyword for context customization
     @contextlib.contextmanager
