@@ -215,16 +215,15 @@ def main():
         def __init__(self):
             self.ui = UI(self)
         def update(self, screen):
-            self.ui.draw_text(screen,
-                              "The quick brown fox jumps over the lazy dog.",
+            self.ui.draw_text("The quick brown fox jumps over the lazy dog.",
                               location=(10, 75))
             screen.lock()
-            self.ui.draw_circle(screen, (50, 200), 30)
-            self.ui.draw_rect(screen, (50, 300), (60, 60))
+            self.ui.draw_circle((50, 200), 30)
+            self.ui.draw_rect((50, 300), (60, 60))
             screen.unlock()
-        def setup(self, screen):
-            self.ui.add_button(screen, "New button", self.button_handler)
-            self.ui.add_input(screen, "New input", self.button_handler,
+        def setup(self):
+            self.ui.add_button("New button", self.button_handler)
+            self.ui.add_input("New input", self.button_handler,
                               location=(10, 40))
 
         def handle(self, event):
