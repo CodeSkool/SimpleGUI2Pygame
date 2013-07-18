@@ -18,6 +18,7 @@ import functools
 import pygame
 from pygame.locals import *
 
+from utilities_1 import state, pgxtra, filehelper, ui
 from filehelper import FileHelper
 from state import State
 from ui import UI, UIContext
@@ -343,7 +344,7 @@ class SplashScreen(State):
                             milliseconds=self.displays[self.current][0])
         State.start(self)
 
-    def setup(self, screen):
+    def setup(self):
         self.start_button = SpecialButton(self.start_button_image,
                                           self.start_button_pos,
                                           (158, 61), (0, 0),
@@ -377,8 +378,8 @@ class SplashScreen(State):
         dots = "".join([" ." * 15])
         for key, (name, score) in sorted(scores.items()):
             txt = "".join([name, dots, str(score)])
-            self.ui.draw_text(screen, txt,
-                              location=(W/2, H/2.5 + (key + 1) * H/12), align=0)
+            self.ui.draw_text(txt, location=(W/2, H/2.5 + (key + 1) * H/12),
+                              align=0)
 
     def draw_logo(self, screen):
         screen.blit(self.logo_image, self.pos, self.rect)
@@ -434,7 +435,7 @@ class Playing(State):
                 else:
                     self.paddle.velocity.x = 0
 
-    def setup(self, screen):
+    def setup(self):
         # Load images
         self.image = ImageLoader("breakoutart.png")
         self.block_image = self.image.load(pygame.Rect(0, 0, 256, 64))
@@ -485,10 +486,10 @@ class Playing(State):
         blocks = "Blocks: " + str(len(self.block_group))
         lives = "Lives: " + str(self.lives)
 
-        self.ui.draw_text(screen, score, location=(W/20, 10), align=-1)
-        self.ui.draw_text(screen, level, location=(6*W/20, 10), align=-1)
-        self.ui.draw_text(screen, blocks, location=(11*W/20, 10), align=-1)
-        self.ui.draw_text(screen, lives, location=(16*W/20, 10), align=-1)
+        self.ui.draw_text(score, location=(W/20, 10), align=-1)
+        self.ui.draw_text(level, location=(6*W/20, 10), align=-1)
+        self.ui.draw_text(blocks, location=(11*W/20, 10), align=-1)
+        self.ui.draw_text(lives, location=(16*W/20, 10), align=-1)
 
         # Update blocks
         if len(self.block_group) == 0:
@@ -626,7 +627,7 @@ class GameOver(State):
         high_scores.save()
         self.transition()
 
-    def setup(self, screen):
+    def setup(self):
         self.pos = (0, 0)
         self.rect = pygame.Rect(self.pos, (W, H))
         self.gameover = ImageLoader("breakout_endpg.png")
@@ -642,19 +643,18 @@ class GameOver(State):
                                               "Comfortaa-Regular.ttf", 30,
                                               BLACK, DK_PURPLE, location, size,
                                               0, 3, 0)):
-                self.ui.add_input(screen, "___",
-                                  lambda text: self.input_text(text))
+                self.ui.add_input("___", lambda text: self.input_text(text))
 
     def update(self, screen):
         screen.blit(self.gameover_image, self.pos, self.rect)
         if self.replace == None:
-            self.ui.draw_text(screen, "Your Score: " + str(self.score),
+            self.ui.draw_text("Your Score: " + str(self.score),
                               (W/2, 6 * H/10), align=0)
         else:
-            self.ui.draw_text(screen, "New High Score!", (W/2, 6*H/10), align=0)
-            self.ui.draw_text(screen, "Your Score: " + str(self.score),
+            self.ui.draw_text("New High Score!", (W/2, 6*H/10), align=0)
+            self.ui.draw_text("Your Score: " + str(self.score),
                               (W/2, 7 * H/10), align=0)
-            self.ui.draw_text(screen, "Enter your initials:", (W/2, 8 * H/10),
+            self.ui.draw_text("Enter your initials:", (W/2, 8 * H/10),
                               align=0)
 
 
@@ -672,6 +672,7 @@ class Game:
 
 
 def main():
+    #Game().start(SplashScreen)
     Game().start(lambda: GameOver(605))
 
 if __name__ == '__main__':
