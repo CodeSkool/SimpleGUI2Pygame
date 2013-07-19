@@ -241,8 +241,8 @@ def main():
     quit()
 
 
-#if __name__ == '__main__':
-    #import doctest
-    #results = doctest.testmod()
-    #if results[0] == 0:
-        #main()
+if __name__ == '__main__':
+    import doctest
+    results = doctest.testmod()
+    if results[0] == 0:
+        main()
