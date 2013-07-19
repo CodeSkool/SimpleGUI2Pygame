@@ -210,6 +210,7 @@ def quit():
     pygame.quit()
     sys.exit()
 
+
 def main():
     class tester:
         def __init__(self):
@@ -239,8 +240,9 @@ def main():
 
     quit()
 
-if __name__ == '__main__':
-   import doctest
-   results = doctest.testmod()
-   if results[0] == 0:
-      main()
+
+#if __name__ == '__main__':
+    #import doctest
+    #results = doctest.testmod()
+    #if results[0] == 0:
+        #main()
