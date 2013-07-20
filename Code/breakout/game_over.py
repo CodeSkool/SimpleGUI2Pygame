@@ -1,8 +1,7 @@
 #!/usr/local/bin/python
 
-##
 import pygame
-##
+
 from utilities_1 import state as st
 from utilities_1 import ui
 from utilities_1 import imageloader as IL
@@ -12,10 +11,7 @@ import timer_events as te
 import splash_screen as ss
 from const import *
 
-# Constants
 
-
-# Classes
 class GameOver(st.State):
     def __init__(self, score):
         st.State.__init__(self)

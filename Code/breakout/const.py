@@ -17,6 +17,8 @@ Jules_UIContext = ui.UIContext("Breakout Revisited", W, H, 0,
                             "resources\\Comfortaa-Regular.ttf", 30,
                             BLACK, DK_PURPLE, (0,0), (W/10, H/10), 0, 0, 0)
 
+
+
 def main():
     print (W, H)
     print LEVELS

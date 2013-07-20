@@ -3,9 +3,6 @@
 import itertools
 from utilities_1 import filehelper as fh
 
-
-
-# Classes
 class HighScores:
     high_scores = None
     def __init__(self):

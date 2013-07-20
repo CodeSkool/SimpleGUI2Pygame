@@ -12,7 +12,6 @@ import timer_events as te
 import high_scores as hs
 from const import *
 
-# Classes
 class SplashScreen(st.State):
     def __init__(self, current=0):
         st.State.__init__(self)
@@ -99,6 +98,7 @@ class SplashScreen(st.State):
 
 
 def main():
+    hs.HighScores().load()
     s = SplashScreen()
     s.start()
     ui.quit()

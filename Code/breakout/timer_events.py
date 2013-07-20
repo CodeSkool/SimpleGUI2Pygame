@@ -1,10 +1,6 @@
 #!/usr/local/bin/python
 
-
 import pygame, pygame.locals
-
-# Classes
-
 
 class TimerEvents:
     SplashScreen = pygame.USEREVENT + 1

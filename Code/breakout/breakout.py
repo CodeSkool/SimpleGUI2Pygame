@@ -18,21 +18,15 @@ import functools
 import pygame
 from pygame.locals import *
 
-from utilities_1 import state as st, pgxtra as pgx, filehelper as fh, ui
-from utilities_1 import imageloader as IL, level_loader as LL
-from utilities_1 import point, basesprite
-
-from high_scores import HighScores
-from timer_events import TimerEvents
-from splash_screen import SplashScreen
-from playing import Playing
+import high_scores as hs
+import splash_screen as ss
 
 
 # Classes
 class Game:
     def __init__(self):
         global high_scores
-        high_scores = HighScores()
+        high_scores = hs.HighScores()
         high_scores.load()
 
     def start(self, init_state):
@@ -43,7 +37,7 @@ class Game:
 
 
 def main():
-    Game().start(SplashScreen)
+    Game().start(ss.SplashScreen)
     #Game().start(lambda: GameOver(0))
 
 if __name__ == '__main__':

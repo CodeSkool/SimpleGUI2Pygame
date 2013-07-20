@@ -1,21 +1,9 @@
 #!/usr/local/bin/python
 
-#-------------------------------------------------------------------------------
-# Name:        Breakout Revisited
-# Purpose:     Another breakout game!!
-# Author:      Jules
-# Created:     07/17/2013
-# Copyright:   (c) Julie Ann Stoltz 2013
-# Licence:     DBAD (refer to http://www.dbad-license.org/)
-#-------------------------------------------------------------------------------
-
-##
 import pygame
 from pygame.locals import *
-##
+
 from utilities_1 import state as st
-##from utilities_1 import pgxtra as pgx
-##from utilities_1 import filehelper as fh
 from utilities_1 import ui
 from utilities_1 import imageloader as IL
 from utilities_1 import point
@@ -23,9 +11,6 @@ from utilities_1 import basesprite
 
 import game_over as go
 from const import *
-
-# Classes
-
 
 class Playing(st.State):
     def __init__(self, lives=3, score=0, level=1, block_group=None):
