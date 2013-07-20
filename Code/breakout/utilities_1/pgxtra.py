@@ -8,7 +8,7 @@
 # Copyright:   (c) Julie Ann Stoltz 2013
 # Licence:     DBAD (refer to http://www.dbad-license.org/)
 #-------------------------------------------------------------------------------
-
+type
 import pygame, sys
 import threading
 
@@ -339,7 +339,6 @@ class InputField(PgxtraWidget):
                  fld_size, func_call, font_size=40, len_cap=0, focus=False):
         PgxtraWidget.__init__(self)
         self.label = label
-        print type(self.label)
         self.default_label = self.label[:]
         self.text_color = text_color
         self.bg_color = bg_color
