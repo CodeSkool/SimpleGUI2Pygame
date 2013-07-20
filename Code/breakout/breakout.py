@@ -431,8 +431,8 @@ class Game:
 
 
 def main():
-    #Game().start(SplashScreen)
-    Game().start(lambda: GameOver(10000))
+    Game().start(SplashScreen)
+    #Game().start(lambda: GameOver(10000))
 
 if __name__ == '__main__':
     main()
