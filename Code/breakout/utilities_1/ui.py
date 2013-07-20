@@ -111,9 +111,9 @@ class UI:
 
     def draw(self):
         """Allow everything to draw itself."""
+        self.target.update(self.screen)
         for control in self.controls:
             control.draw(self.screen)
-        self.target.update(self.screen)
 
     def quit(self):
         """Notify the target that we are quiting, then quit."""
