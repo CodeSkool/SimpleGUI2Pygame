@@ -228,13 +228,15 @@ class Playing(st.State):
 
         # Create paddle sprite
         self.paddle = basesprite.BaseSprite()
-        self.paddle.set_image(self.short_paddle_image, 88, 24, 1)
+        #self.paddle.set_image(self.short_paddle_image, 88, 24, 1)
+        self.paddle.set_image(self.long_paddle_image, 128, 24, 1)
         self.paddle.position = W / 2, H - self.paddle.frame_height
         self.paddle_group.add(self.paddle)
 
         # Create ball sprite
         self.ball = basesprite.BaseSprite()
-        self.ball.set_image(self.gray_ball_image, 16, 16, 1)
+        #self.ball.set_image(self.gray_ball_image, 16, 16, 1)
+        self.ball.set_image(self.brown_ball_image, 16, 16, 1)
         self.ball_group.add(self.ball)
 
     def update(self, screen):
@@ -431,7 +433,7 @@ class Game:
 
 def main():
     Game().start(SplashScreen)
-    #Game().start(lambda: GameOver(605))
+    #Game().start(lambda: GameOver(10000))
 
 if __name__ == '__main__':
     main()
