@@ -20,6 +20,7 @@ from pygame.locals import *
 
 from utilities_1 import state as st, pgxtra as pgx, filehelper as fh, ui
 from utilities_1 import imageloader as IL
+from utilities_1 import point
 
 # CONSTANTS
 
@@ -163,31 +164,6 @@ class HighScores:
         fh.FileHelper(self.high_scores_file).save(HighScores.high_scores)
 
 
-class Point:
-    '''Creates coordinate point with X and Y properties.'''
-    def __init__(self, x, y):
-        self.__x = x
-        self.__y = y
-
-    # X property
-    def getx(self):
-        return self.__x
-
-    def setx(self, x):
-        self.__x = x
-
-    x = property(getx, setx)
-
-    # Y property
-    def gety(self):
-        return self.__y
-
-    def sety(self, y):
-        self.__y = y
-
-    y = property(gety, sety)
-
-
 class BaseSprite(pygame.sprite.Sprite):
     '''Base class to create image objects that expands the pygame class.'''
     def __init__(self):
@@ -202,7 +178,7 @@ class BaseSprite(pygame.sprite.Sprite):
         self.columns = 1
         self.last_time = 0
         self.direction = 0
-        self.velocity = Point(0.0,0.0)
+        self.velocity = point.Point(0.0,0.0)
 
     # X property
     def _getx(self):
@@ -550,7 +526,7 @@ class Playing(st.State):
         self.paddle_group.draw(screen)
 
     def start_ball(self):
-        self.ball.velocity = Point(6.0, -8.0)
+        self.ball.velocity = point.Point(6.0, -8.0)
 
 
 class GameOver(st.State):
