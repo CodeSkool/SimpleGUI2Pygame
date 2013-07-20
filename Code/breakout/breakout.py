@@ -141,7 +141,7 @@ DK_PURPLE = pygame.Color(128,  0,255,255)
 BLACK  = pygame.Color(  0,  0,  0,255)
 
 Jules_UIContext = ui.UIContext("Breakout Revisited", W, H, 0,
-                            "Comfortaa-Regular.ttf", 30,
+                            "resources\\Comfortaa-Regular.ttf", 30,
                             BLACK, DK_PURPLE, (0,0), (W/10, H/10), 0, 0, 0)
 
 
@@ -177,7 +177,7 @@ class ImageLoader:
 class HighScores:
     high_scores = None
     def __init__(self):
-        self.high_scores_file = "breakout_hs.pkl"
+        self.high_scores_file = "resources\\breakout_hs.pkl"
 
     def load(self):
         HighScores.high_scores = fh.FileHelper(self.high_scores_file).load()
@@ -317,7 +317,7 @@ class SplashScreen(st.State):
         self.current = current
         self.draw = self.displays[self.current][1]
 
-        self.image = ImageLoader("breakoutart.png")
+        self.image = ImageLoader("resources\\breakoutart.png")
         self.start_rect = pygame.Rect(0, 89, 158, 122)
         self.start_button_image = self.image.load(self.start_rect)
         self.start_button = None
@@ -325,13 +325,13 @@ class SplashScreen(st.State):
 
         self.pos = (0, 0)
         self.rect = pygame.Rect(self.pos, (W, H))
-        self.logo = ImageLoader("breakout_titlepg.png")
+        self.logo = ImageLoader("resources\\breakout_titlepg.png")
         self.logo_image = self.logo.load(self.rect)
 
-        self.startpage = ImageLoader("breakout_startpg.png")
+        self.startpage = ImageLoader("resources\\breakout_startpg.png")
         self.start_image = self.startpage.load(self.rect)
 
-        self.hiscore = ImageLoader("breakout_hspg.png")
+        self.hiscore = ImageLoader("resources\\breakout_hspg.png")
         self.hiscore_image = self.hiscore.load(self.rect)
 
     def start(self):
@@ -432,7 +432,7 @@ class Playing(st.State):
 
     def setup(self):
         # Load images
-        self.image = ImageLoader("breakoutart.png")
+        self.image = ImageLoader("resources\\breakoutart.png")
         self.block_image = self.image.load(pygame.Rect(0, 0, 256, 64))
         self.brown_ball_image = self.image.load(pygame.Rect(234, 64, 16, 16))
         self.gray_ball_image = self.image.load(pygame.Rect(0, 64, 16, 16))
@@ -625,7 +625,7 @@ class GameOver(st.State):
     def setup(self):
         self.pos = (0, 0)
         self.rect = pygame.Rect(self.pos, (W, H))
-        self.gameover = ImageLoader("breakout_endpg.png")
+        self.gameover = ImageLoader("resources\\breakout_endpg.png")
         self.gameover_image = self.gameover.load(self.rect)
 
         if self.replace == None:
@@ -667,8 +667,8 @@ class Game:
 
 
 def main():
-    #Game().start(SplashScreen)
-    Game().start(lambda: GameOver(605))
+    Game().start(SplashScreen)
+    #Game().start(lambda: GameOver(605))
 
 if __name__ == '__main__':
     main()
