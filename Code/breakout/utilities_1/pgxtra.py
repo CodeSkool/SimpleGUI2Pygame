@@ -8,7 +8,7 @@
 # Copyright:   (c) Julie Ann Stoltz 2013
 # Licence:     DBAD (refer to http://www.dbad-license.org/)
 #-------------------------------------------------------------------------------
-type
+
 import pygame, sys
 import threading
 
