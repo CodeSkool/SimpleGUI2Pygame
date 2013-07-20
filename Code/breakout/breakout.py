@@ -19,6 +19,7 @@ import pygame
 from pygame.locals import *
 
 from utilities_1 import state as st, pgxtra as pgx, filehelper as fh, ui
+from utilities_1 import imageloader as IL
 
 # CONSTANTS
 
@@ -146,34 +147,6 @@ Jules_UIContext = ui.UIContext("Breakout Revisited", W, H, 0,
 
 
 # Classes
-class ImageLoader:
-    '''Attempts to load image or any combination of sub-images.'''
-    def __init__(self, filename):
-        try:
-            self.image = pygame.image.load(filename)
-        except pygame.error, message:
-            print 'Unable to load image:', filename
-            #print message
-            raise SystemExit
-
-    # Load one sub-image from image given position as Rect object
-    def load(self, rect):
-        image = pygame.Surface(rect.size)
-        image.blit(self.image, (0, 0), rect)
-        return image
-
-    # Load images given positions as Rects, return as list of images
-    def load_list(self, rects):
-        return [self.load(rect) for rect in rects]
-
-    # Load a strip of images given position of first image as Rect object
-    # (Note: The images have to be the same size.)
-    def load_strip(self, rect, image_count):
-        tuples = [(rect[0]+rect[2]*x, rect[1], rect[2], rect[3])
-                  for x in range(image_count)]
-        return self.load_list(tuples)
-
-
 class HighScores:
     high_scores = None
     def __init__(self):
@@ -317,7 +290,7 @@ class SplashScreen(st.State):
         self.current = current
         self.draw = self.displays[self.current][1]
 
-        self.image = ImageLoader("resources\\breakoutart.png")
+        self.image = IL.ImageLoader("resources\\breakoutart.png")
         self.start_rect = pygame.Rect(0, 89, 158, 122)
         self.start_button_image = self.image.load(self.start_rect)
         self.start_button = None
@@ -325,13 +298,13 @@ class SplashScreen(st.State):
 
         self.pos = (0, 0)
         self.rect = pygame.Rect(self.pos, (W, H))
-        self.logo = ImageLoader("resources\\breakout_titlepg.png")
+        self.logo = IL.ImageLoader("resources\\breakout_titlepg.png")
         self.logo_image = self.logo.load(self.rect)
 
-        self.startpage = ImageLoader("resources\\breakout_startpg.png")
+        self.startpage = IL.ImageLoader("resources\\breakout_startpg.png")
         self.start_image = self.startpage.load(self.rect)
 
-        self.hiscore = ImageLoader("resources\\breakout_hspg.png")
+        self.hiscore = IL.ImageLoader("resources\\breakout_hspg.png")
         self.hiscore_image = self.hiscore.load(self.rect)
 
     def start(self):
@@ -432,7 +405,7 @@ class Playing(st.State):
 
     def setup(self):
         # Load images
-        self.image = ImageLoader("resources\\breakoutart.png")
+        self.image = IL.ImageLoader("resources\\breakoutart.png")
         self.block_image = self.image.load(pygame.Rect(0, 0, 256, 64))
         self.brown_ball_image = self.image.load(pygame.Rect(234, 64, 16, 16))
         self.gray_ball_image = self.image.load(pygame.Rect(0, 64, 16, 16))
@@ -625,7 +598,7 @@ class GameOver(st.State):
     def setup(self):
         self.pos = (0, 0)
         self.rect = pygame.Rect(self.pos, (W, H))
-        self.gameover = ImageLoader("resources\\breakout_endpg.png")
+        self.gameover = IL.ImageLoader("resources\\breakout_endpg.png")
         self.gameover_image = self.gameover.load(self.rect)
 
         if self.replace == None:
