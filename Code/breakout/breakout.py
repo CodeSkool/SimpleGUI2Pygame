@@ -18,12 +18,7 @@ import functools
 import pygame
 from pygame.locals import *
 
-from utilities_1 import state, pgxtra, filehelper, ui
-from filehelper import FileHelper
-from state import State
-from ui import UI, UIContext
-from pgxtra import SpecialButton
-
+from utilities_1 import state as st, pgxtra as pgx, filehelper as fh, ui
 
 # CONSTANTS
 
@@ -145,7 +140,7 @@ LEVELS = (
 DK_PURPLE = pygame.Color(128,  0,255,255)
 BLACK  = pygame.Color(  0,  0,  0,255)
 
-Jules_UIContext = UIContext("Breakout Revisited", W, H, 0,
+Jules_UIContext = ui.UIContext("Breakout Revisited", W, H, 0,
                             "Comfortaa-Regular.ttf", 30,
                             BLACK, DK_PURPLE, (0,0), (W/10, H/10), 0, 0, 0)
 
@@ -185,14 +180,14 @@ class HighScores:
         self.high_scores_file = "breakout_hs.pkl"
 
     def load(self):
-        HighScores.high_scores = FileHelper(self.high_scores_file).load()
+        HighScores.high_scores = fh.FileHelper(self.high_scores_file).load()
         if HighScores.high_scores == None:
             keys = [i + 1 for i in range(5)]
             values = [("AAA", 100 * (i+1)) for i in range(5, 0, -1)]
             HighScores.high_scores = dict(itertools.izip(keys, values))
 
     def save(self):
-        FileHelper(self.high_scores_file).save(HighScores.high_scores)
+        fh.FileHelper(self.high_scores_file).save(HighScores.high_scores)
 
 
 class Point:
@@ -307,10 +302,10 @@ class TimerEvents:
         pygame.time.set_timer(eventid, 0)
 
 
-class SplashScreen(State):
+class SplashScreen(st.State):
     def __init__(self, current=0):
-        State.__init__(self)
-        self.ui = UI(self, Jules_UIContext)
+        st.State.__init__(self)
+        self.ui = ui.UI(self, Jules_UIContext)
         self.nextState = Playing
         logo_duration = 3 * 1000
         start_duration = 8 * 1000
@@ -342,10 +337,10 @@ class SplashScreen(State):
     def start(self):
         TimerEvents().start(eventid=self.eventid,
                             milliseconds=self.displays[self.current][0])
-        State.start(self)
+        st.State.start(self)
 
     def setup(self):
-        self.start_button = SpecialButton(self.start_button_image,
+        self.start_button = pgx.SpecialButton(self.start_button_image,
                                           self.start_button_pos,
                                           (158, 61), (0, 0),
                                           lambda: self.transition(),
@@ -390,10 +385,10 @@ class SplashScreen(State):
         self.start_button.draw(screen)
 
 
-class Playing(State):
+class Playing(st.State):
     def __init__(self, lives=3, score=0, level=1, block_group=None):
-        State.__init__(self)
-        self.ui = UI(self, Jules_UIContext)
+        st.State.__init__(self)
+        self.ui = ui.UI(self, Jules_UIContext)
         self.nextState = None
         self.score = score
         self.lives = lives
@@ -404,7 +399,7 @@ class Playing(State):
         self.right_down = False
 
     def start(self):
-        State.start(self)
+        st.State.start(self)
 
     def handle(self, event):
         if event.type == KEYDOWN:
@@ -585,10 +580,10 @@ class Playing(State):
         self.ball.velocity = Point(6.0, -8.0)
 
 
-class GameOver(State):
+class GameOver(st.State):
     def __init__(self, score):
-        State.__init__(self)
-        self.ui = UI(self, Jules_UIContext)
+        st.State.__init__(self)
+        self.ui = ui.UI(self, Jules_UIContext)
         self.nextState = lambda: SplashScreen(current=1)
         self.eventid = TimerEvents.GameOver
         self.score = score
@@ -603,7 +598,7 @@ class GameOver(State):
     def start(self):
         if self.replace == None:
             TimerEvents().start(self.eventid, self.countdown)
-        State.start(self)
+        st.State.start(self)
 
     def handle(self, event):
         if event.type == self.eventid:
@@ -611,7 +606,7 @@ class GameOver(State):
 
     def transition(self):
         TimerEvents().stop(self.eventid)
-        State.transition(self)
+        st.State.transition(self)
 
     def input_text(self, text):
         new_scores = {}
@@ -639,7 +634,7 @@ class GameOver(State):
             size = (75, 50)
             location = ((W/2) - (size[0] / 2), 8 * H/10 + 30)
 
-            with self.ui.newcontext(UIContext("Breakout Revisited", W, H, 0,
+            with self.ui.newcontext(ui.UIContext("Breakout Revisited", W, H, 0,
                                               "Comfortaa-Regular.ttf", 30,
                                               BLACK, DK_PURPLE, location, size,
                                               0, 3, 0)):
