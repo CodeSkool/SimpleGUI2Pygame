@@ -456,7 +456,7 @@ class Playing(st.State):
                     block.position = x, y
 
                     # Read block from LEVELS
-                    num = LEVELS[self.level][by * 12 + bx]
+                    num = LEVELS[self.level-1][by * 12 + bx]
                     block.first_frame = num - 1
                     block.last_frame = num - 1
                     # Don't draw block for 0
