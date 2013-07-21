@@ -151,9 +151,9 @@ class Playing(st.State):
             self.paddle.X = 0
         elif self.paddle.X > W - self.paddle.frame_width:
             self.paddle.X = W - self.paddle.frame_width
+        self.paddle_group.update()
 
         # Move ball
-        self.ball_group.update()
         if self.waiting:
             # Ball is resting on center of paddle
             self.ball.X = self.paddle.X + 36
@@ -225,6 +225,8 @@ class Playing(st.State):
             # Anything else
             else:
                 self.ball.velocity.y *= -1
+
+        self.ball_group.update()
 
         # Draw everything
         self.block_group.draw(screen)
