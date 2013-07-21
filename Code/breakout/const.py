@@ -17,13 +17,17 @@ Jules_UIContext = ui.UIContext("Breakout Revisited", W, H, 0,
                             "resources\\Comfortaa-Regular.ttf", 30,
                             BLACK, DK_PURPLE, (0,0), (W/10, H/10), 0, 0, 0)
 
-
+REBOUND_SOUND_FILES = { "boop1" : "resources\\boop1.ogg",
+                "beep1" : "resources\\beep1.ogg",
+                "bop1" : "resources\\bop1.ogg",
+                }
 
 def main():
     print (W, H)
     print LEVELS
     print DK_PURPLE, BLACK
     print Jules_UIContext
+    print REBOUND_SOUND_FILES
 
 if __name__ == '__main__':
     main()

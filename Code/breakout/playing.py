@@ -1,5 +1,7 @@
 #!/usr/local/bin/python
 
+import random
+
 import pygame
 from pygame.locals import *
 
@@ -13,6 +15,7 @@ import game_over as go
 from const import *
 
 class Playing(st.State):
+    sounds = None
     def __init__(self, lives=3, score=0, level=1, block_group=None):
         st.State.__init__(self)
         self.ui = ui.UI(self, Jules_UIContext)
@@ -24,6 +27,15 @@ class Playing(st.State):
         self.waiting = True
         self.left_down = False
         self.right_down = False
+
+    def get_sounds(self):
+        if Playing.sounds == None:
+            Playing.sounds = self.ui.get_sounds(REBOUND_SOUND_FILES)
+        return Playing.sounds
+
+    def beep(self):
+        random.choice(self.get_sounds().values()).play()
+
 
     def start(self):
         st.State.start(self)
@@ -145,12 +157,15 @@ class Playing(st.State):
         if self.ball.X < 0:
             self.ball.X = 0
             self.ball.velocity.x *= -1
+            self.beep()
         elif self.ball.X > W - self.ball.frame_width:
             self.ball.X = W - self.ball.frame_width
             self.ball.velocity.x *= -1
+            self.beep()
         if self.ball.Y < 0:
             self.ball.Y = 0
             self.ball.velocity.y *= -1
+            self.beep()
         elif self.ball.Y > H - self.ball.frame_height:
             self.waiting = True
             self.lives -= 1
@@ -172,6 +187,8 @@ class Playing(st.State):
                 self.ball.velocity.x = -abs(self.ball.velocity.x)
             else:
                 self.ball.velocity.x = abs(self.ball.velocity.x)
+            self.beep()
+
 
         # Check for collision between ball and blocks
         hit_block = pygame.sprite.spritecollideany(self.ball, self.block_group)
@@ -199,6 +216,7 @@ class Playing(st.State):
             # Anything else
             else:
                 self.ball.velocity.y *= -1
+            self.beep()
 
         # Draw everything
         self.block_group.draw(screen)
