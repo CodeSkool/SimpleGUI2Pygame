@@ -93,12 +93,9 @@ class UI:
             # update the clock
             self.fpsClock.tick(30)
 
-    def get_sounds(self, name_map):
-        sounds = {}
-        for name,filename in name_map.iteritems():
-            sounds[name] = pygame.mixer.Sound(filename)
-            sounds[name].play()
-        return sounds
+    def get_sounds(self, filename):
+        sound = pygame.mixer.Sound(filename)
+        return sound
 
     def transition(self):
         self.transitioning = True
