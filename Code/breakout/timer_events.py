@@ -2,6 +2,7 @@
 
 import pygame, pygame.locals
 
+
 class TimerEvents:
     SplashScreen = pygame.USEREVENT + 1
     GameOver = pygame.USEREVENT + 2
