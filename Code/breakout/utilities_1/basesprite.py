@@ -49,7 +49,7 @@ class BaseSprite(pygame.sprite.Sprite):
         self.image = image
         if width == 0 and height == 0:
             self.frame_width = image.get_width()
-            self.frame_width = image.get_height()
+            self.frame_height = image.get_height()
         else:
             self.frame_width = width
             self.frame_height = height
