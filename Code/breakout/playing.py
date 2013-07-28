@@ -117,8 +117,6 @@ class Playing(st.State):
                         # Add the block to the group
                         self.block_group.add(block)
 
-
-
         # Create paddle sprite
         self.paddle = basesprite.BaseSprite()
         #self.paddle.set_image(self.short_paddle_image, 88, 24, 1)
@@ -139,10 +137,10 @@ class Playing(st.State):
         blocks = "Blocks: " + str(len(self.block_group))
         lives = "Lives: " + str(self.lives)
 
-        self.ui.draw_text(score, location=(W/20, 10), align=-1)
-        self.ui.draw_text(level, location=(6*W/20, 10), align=-1)
-        self.ui.draw_text(blocks, location=(11*W/20, 10), align=-1)
-        self.ui.draw_text(lives, location=(16*W/20, 10), align=-1)
+        self.ui.draw_text(score, location=(W / 20, 10), align=-1)
+        self.ui.draw_text(level, location=(6 * W / 20, 10), align=-1)
+        self.ui.draw_text(blocks, location=(11 * W / 20, 10), align=-1)
+        self.ui.draw_text(lives, location=(16 * W / 20, 10), align=-1)
 
         # Update blocks
         if len(self.block_group) == 0:
@@ -186,7 +184,9 @@ class Playing(st.State):
         elif self.ball.Y > H - self.ball.frame_height:
             self.waiting = True
             self.lives -= 1
-            self.nextState = lambda: Playing(self.lives, self.score, self.level,
+            self.nextState = lambda: Playing(self.lives,
+                                             self.score,
+                                             self.level,
                                              self.block_group)
             self.transition()
         if self.lives < 1:
@@ -199,8 +199,8 @@ class Playing(st.State):
             self.ball.velocity.y = -abs(self.ball.velocity.y)
             bx = self.ball.X + 8
             by = self.ball.Y + 8
-            px = self.paddle.X + self.paddle.frame_width/2
-            py = self.paddle.Y + self.paddle.frame_height/2
+            px = self.paddle.X + self.paddle.frame_width / 2
+            py = self.paddle.Y + self.paddle.frame_height / 2
             if bx < px:
                 self.ball.velocity.x = -abs(self.ball.velocity.x)
             else:
@@ -216,8 +216,8 @@ class Playing(st.State):
             by = self.ball.Y + 8
 
             # Above or below
-            if bx > hit_block.X+5 and bx < hit_block.X + hit_block.frame_width-5:
-                if by < hit_block.Y + hit_block.frame_height/2:
+            if hit_block.X + 5 < bx < hit_block.X + hit_block.frame_width - 5:
+                if by < hit_block.Y + hit_block.frame_height / 2:
                     self.ball.velocity.y = -abs(self.ball.velocity.y)
                 else:
                     self.ball.velocity.y = abs(self.ball.velocity.y)

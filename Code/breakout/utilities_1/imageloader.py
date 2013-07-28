@@ -1,5 +1,6 @@
 import pygame
 
+
 class ImageLoader:
     '''Attempts to load image or any combination of sub-images.'''
     def __init__(self, filename):
@@ -7,7 +8,7 @@ class ImageLoader:
             self.image = pygame.image.load(filename)
             self.rect = self.image.get_rect()
         except pygame.error, message:
-            print 'Unable to load image:', filename
+            print 'Unable to load image:' + message, filename
             #print message
             raise SystemExit
 
