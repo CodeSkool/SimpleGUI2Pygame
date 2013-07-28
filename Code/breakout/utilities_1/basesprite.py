@@ -7,7 +7,7 @@ class BaseSprite(pygame.sprite.Sprite):
     def __init__(self, filename=None, width=0, height=0, columns=1):
         pygame.sprite.Sprite.__init__(self)
 
-        self.image = None
+        self.original_image = None
         self.frame = 0
         self.old_frame = -1
         self.frame_width = 1
@@ -53,15 +53,16 @@ class BaseSprite(pygame.sprite.Sprite):
 
     def set_image(self, image=None, width=0, height=0, columns=1):
         if image != None:
-            self.image = image
+            self.original_image = image
         if width == 0 and height == 0:
             self.frame_width = image.get_width()
             self.frame_height = image.get_height()
         else:
             self.frame_width = width
             self.frame_height = height
-            rect = self.image.get_rect()
-            self.last_frame = (rect.width // width) * (rect.height // height) - 1
+            rect = self.original_image.get_rect()
+            self.last_frame = (rect.width // width) * (rect.height // height)
+            self.last_frame -= 1
         self.rect = pygame.Rect(0, 0, self.frame_width, self.frame_height)
         self.columns = columns
 
@@ -76,14 +77,23 @@ class BaseSprite(pygame.sprite.Sprite):
         #else:
             #self.frame = self.first_frame
 
+
         # Change image if necessary
         if self.frame != self.old_frame:
             frame_x = self.frame % self.columns * self.frame_width
             frame_y = self.frame // self.columns * self.frame_height
             rect = pygame.Rect(frame_x, frame_y, self.frame_width,
                                self.frame_height)
-            self.image = self.image.subsurface(rect)
+            self.image = self.original_image.subsurface(rect)
             self.old_frame = self.frame
+
+
+        # cycle the frame
+        if self.columns > 1:
+            if current_time > self.last_time + rate:
+                self.frame += 1
+                self.frame %= (self.last_frame + 1)
+                self.last_time = current_time
 
     def get_frame_y(self, frame, columns, height):
         """
@@ -98,6 +108,7 @@ class BaseSprite(pygame.sprite.Sprite):
         return (frame / columns) * height
 
 
+
 def test():
     import doctest
     failed = 0
@@ -108,6 +119,7 @@ def test():
         pass
     else:
         pass
+
 
 
 if __name__ == '__main__':
