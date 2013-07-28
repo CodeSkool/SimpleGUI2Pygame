@@ -1,12 +1,6 @@
 #!/usr/local/bin/python
 
-import random
-
-import pygame
-from pygame.locals import *
-
 from utilities_1 import state as st
-from utilities_1 import ui
 from utilities_1 import imageloader as IL
 from utilities_1 import point
 from utilities_1 import basesprite
