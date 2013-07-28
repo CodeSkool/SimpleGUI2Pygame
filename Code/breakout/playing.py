@@ -1,8 +1,5 @@
 #!/usr/local/bin/python
 
-import random
-
-import pygame
 from pygame.locals import *
 
 from utilities_1 import state as st
@@ -13,6 +10,7 @@ from utilities_1 import basesprite
 
 import game_over as go
 from const import *
+
 
 class Playing(st.State):
     def __init__(self, lives=3, score=0, level=1, block_group=None):
@@ -105,7 +103,7 @@ class Playing(st.State):
                     # Don't draw block for 0
                     if block_num > 0:
                         # Get the current image
-                        current_image = self.block_images[block_num]
+                        current_image = self.block_images[block_num - 1]
                         block = basesprite.BaseSprite()
                         block.set_image(current_image, 64, 32, 1)
 

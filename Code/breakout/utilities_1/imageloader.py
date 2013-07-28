@@ -42,7 +42,7 @@ class ImageLoader:
                     rect[2],
                     rect[3])
             returnVal.extend(self.load_strip(rect, columns))
-        returnVal
+        return returnVal
 
 
 def test():
