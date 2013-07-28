@@ -26,9 +26,22 @@ class ImageLoader:
     # Load a strip of images given position of first image as Rect object
     # (Note: The images have to be the same size.)
     def load_strip(self, rect, image_count):
-        tuples = [(rect[0] + rect[2] * x, rect[1], rect[2], rect[3])
+        tuples = [pygame.rect.Rect(rect[0] + rect[2] * x,
+                   rect[1],
+                   rect[2],
+                   rect[3])
                   for x in range(image_count)]
         return self.load_list(tuples)
+
+    def load_strips(self, rect, columns, rows=1):
+        returnVal = []
+        for i in range(rows):
+            rect = pygame.rect.Rect(rect[0],
+                    rect[1] + (i * rect[3]),
+                    rect[2],
+                    rect[3])
+            returnVal.extend(self.load_strip(rect, columns))
+        returnVal
 
 
 def test():

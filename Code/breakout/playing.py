@@ -82,6 +82,8 @@ class Playing(st.State):
         # Load images
         self.image = IL.ImageLoader("resources\\breakoutart.png")
         self.block_image = self.image.load(pygame.Rect(0, 0, 256, 64))
+        self.block_images = self.image.load_strips(pygame.Rect(0, 0, 64, 32),
+                                                   4, 2)
         self.brown_ball_image = self.image.load(pygame.Rect(234, 64, 16, 16))
         self.gray_ball_image = self.image.load(pygame.Rect(0, 64, 16, 16))
         self.short_paddle_image = self.image.load(pygame.Rect(16, 64, 88, 24))
@@ -95,21 +97,27 @@ class Playing(st.State):
             self.block_group = pygame.sprite.Group()
 
             # Create blocks for level
-            for bx in range(0, 12):
-                for by in range(0, 10):
-                    block = basesprite.BaseSprite()
-                    block.set_image(self.block_image, 64, 32, 4)
-                    x = (W - 12 * 64)/2 + bx * (block.frame_width)
-                    y = 32 * 2 + by * (block.frame_height)
-                    block.position = x, y
-
+            block_grid = (12, 10)
+            for bx in range(block_grid[0]):
+                for by in range(block_grid[1]):
                     # Read block from LEVELS
-                    num = LEVELS[self.level-1][by * 12 + bx]
-                    block.first_frame = num - 1
-                    block.last_frame = num - 1
+                    block_num = LEVELS[self.level - 1][by * 12 + bx]
                     # Don't draw block for 0
-                    if num > 0:
+                    if block_num > 0:
+                        # Get the current image
+                        current_image = self.block_images[block_num]
+                        block = basesprite.BaseSprite()
+                        block.set_image(current_image, 64, 32, 1)
+
+                        # Get the blocks position in the grid
+                        x = (W - 12 * 64) / 2 + bx * (block.frame_width)
+                        y = 32 * 2 + by * (block.frame_height)
+                        block.position = x, y
+
+                        # Add the block to the group
                         self.block_group.add(block)
+
+
 
         # Create paddle sprite
         self.paddle = basesprite.BaseSprite()
