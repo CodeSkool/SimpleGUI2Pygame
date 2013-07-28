@@ -65,8 +65,6 @@ class BaseSprite(pygame.sprite.Sprite):
         self.rect = pygame.Rect(0, 0, self.frame_width, self.frame_height)
         self.columns = columns
 
-
-
     def update(self, rate=30):
         # Handles animation if applicable
         current_time = pygame.time.get_ticks()
@@ -98,7 +96,8 @@ class BaseSprite(pygame.sprite.Sprite):
         32
         """
         return (frame / columns) * height
-    
+
+
 def test():
     import doctest
     failed = 0
@@ -109,6 +108,7 @@ def test():
         pass
     else:
         pass
-        
+
+
 if __name__ == '__main__':
     test()
