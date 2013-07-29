@@ -26,7 +26,7 @@ class Tester():
         RED = pygame.Color('red')
 
         # Set the height, width and caption of the screen
-        size = [550, 400]
+        size = [550, 425]
         global screen
         screen = pygame.display.set_mode(size)
         pygame.display.set_caption("Example")
