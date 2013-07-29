@@ -12,7 +12,7 @@ class ImageLoader:
             except:
                 self.image.convert()
         except pygame.error, message:
-            print 'Unable to load image:' + message, filename
+            print 'Unable to load image:', filename, "\n", message
             #print message
             raise SystemExit
 

@@ -154,7 +154,7 @@ class Playing(st.State):
                 self.transition()
 
             # Otherwise give bonus for remaining lives and end game
-            else:
+            elif self.level >= len(LEVELS) - 1 and not self.fading_block_group:
                 for life in range(self.lives):
                     self.score += (life + 1) * 10000
                 self.nextState = lambda: go.GameOver(self.score)

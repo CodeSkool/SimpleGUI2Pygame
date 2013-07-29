@@ -17,11 +17,11 @@ tp6
 sI4
 (S'JAS'
 p7
-I10000
+I61080
 tp8
 sI5
 (S'JAS'
 p9
-I3350
+I10000
 tp10
 s.
