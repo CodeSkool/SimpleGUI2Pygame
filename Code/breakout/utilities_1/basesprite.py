@@ -4,7 +4,8 @@ import point
 
 class BaseSprite(pygame.sprite.Sprite):
     '''Base class to create image objects that expands the pygame class.'''
-    def __init__(self, filename=None, width=0, height=0, columns=1):
+    def __init__(self, filename=None, width=0, height=0, columns=1,
+                 expire=False):
         pygame.sprite.Sprite.__init__(self)
 
         self.original_image = None
@@ -18,6 +19,7 @@ class BaseSprite(pygame.sprite.Sprite):
         self.last_time = 0
         self.direction = 0
         self.velocity = point.Point(0.0, 0.0)
+        self.expire = expire
 
         if filename != None:
             import imageloader
@@ -69,14 +71,6 @@ class BaseSprite(pygame.sprite.Sprite):
     def update(self, rate=30):
         # Handles animation if applicable
         current_time = pygame.time.get_ticks()
-        if self.columns > 1:
-            if current_time > self.last_time + rate:
-                self.frame += 1
-                self.frame %= (self.last_frame + 1)
-                self.last_time = current_time
-        #else:
-            #self.frame = self.first_frame
-
 
         # Change image if necessary
         if self.frame != self.old_frame:
@@ -87,14 +81,16 @@ class BaseSprite(pygame.sprite.Sprite):
             self.image = self.original_image.subsurface(rect)
             self.old_frame = self.frame
 
-
-        # cycle the frame
+        # # Handles animation if applicable
         if self.columns > 1:
             if current_time > self.last_time + rate:
                 self.frame += 1
-                self.frame %= (self.last_frame + 1)
-                self.last_time = current_time
-
+                if self.expire and self.frame > self.last_frame:
+                    self.kill()
+                else:
+                    self.frame %= (self.last_frame + 1)
+                    self.last_time = current_time
+                    
     def get_frame_y(self, frame, columns, height):
         """
         >>> bs = BaseSprite()

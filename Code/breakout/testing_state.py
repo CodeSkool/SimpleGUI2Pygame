@@ -11,8 +11,8 @@ class TestingState(state.State):
 
     def setup(self):
         filename = "resources\\breakout_block_fading.png"
-        width, height, columns = 64, 32, 30
-        sprite = basesprite.BaseSprite(filename, width, height, columns)
+        width, height, columns = 64, 32, 18
+        sprite = basesprite.BaseSprite(filename, width, height, columns, True)
         self.sprite_group = pygame.sprite.Group()
         self.sprite_group.add(sprite)
 

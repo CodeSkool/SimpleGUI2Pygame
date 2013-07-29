@@ -82,14 +82,15 @@ class Playing(st.State):
         self.block_image = self.image.load(pygame.Rect(0, 0, 256, 64))
         self.block_images = self.image.load_strips(pygame.Rect(0, 0, 64, 32),
                                                    4, 2)
-        self.brown_ball_image = self.image.load(pygame.Rect(234, 64, 16, 16))
+        self.brown_ball_image = self.image.load(pygame.Rect(232, 64, 16, 16))
         self.gray_ball_image = self.image.load(pygame.Rect(0, 64, 16, 16))
         self.short_paddle_image = self.image.load(pygame.Rect(16, 64, 88, 24))
-        self.long_paddle_image = self.image.load(pygame.Rect(105, 64, 128, 24))
+        self.long_paddle_image = self.image.load(pygame.Rect(104, 64, 127, 24))
 
         # Create sprite groups
         self.paddle_group = pygame.sprite.Group()
         self.ball_group = pygame.sprite.Group()
+        self.fading_block_group = pygame.sprite.Group()
 
         if self.block_group == None:
             self.block_group = pygame.sprite.Group()
@@ -118,7 +119,7 @@ class Playing(st.State):
         # Create paddle sprite
         self.paddle = basesprite.BaseSprite()
         #self.paddle.set_image(self.short_paddle_image, 88, 24, 1)
-        self.paddle.set_image(self.long_paddle_image, 128, 24, 1)
+        self.paddle.set_image(self.long_paddle_image, 127, 24, 1)
         self.paddle.position = W / 2, H - self.paddle.frame_height
         self.paddle_group.add(self.paddle)
 
@@ -142,11 +143,23 @@ class Playing(st.State):
 
         # Update blocks
         if len(self.block_group) == 0:
-            if self.level < len(LEVELS) - 1:
+            self.ball_group.remove()
+            self.paddle_group.remove()
+
+            # Begin next level when all blocks are done if level is available
+            if self.level < len(LEVELS) - 1 and not self.fading_block_group:
                 self.level += 1
                 self.nextState = lambda: Playing(self.lives, self.score,
                                                  self.level)
                 self.transition()
+
+            # Otherwise give bonus for remaining lives and end game
+            else:
+                for life in range(self.lives):
+                    self.score += (life + 1) * 10000
+                self.nextState = lambda: go.GameOver(self.score)
+                self.transition()
+
         self.block_group.update()
 
         # Move paddle
@@ -198,7 +211,7 @@ class Playing(st.State):
             bx = self.ball.X + 8
             by = self.ball.Y + 8
             px = self.paddle.X + self.paddle.frame_width / 2
-            py = self.paddle.Y + self.paddle.frame_height / 2
+            #py = self.paddle.Y + self.paddle.frame_height / 2
             if bx < px:
                 self.ball.velocity.x = -abs(self.ball.velocity.x)
             else:
@@ -209,9 +222,18 @@ class Playing(st.State):
         if hit_block != None:
             self.beep()
             self.score += 10
+            location = hit_block.position
             self.block_group.remove(hit_block)
             bx = self.ball.X + 8
             by = self.ball.Y + 8
+
+            # Create fading block sprite
+            filename = "resources\\breakout_block_fading.png"
+            width, height, columns = 64, 32, 18
+            sprite = basesprite.BaseSprite(filename, width, height, columns,
+                                           expire=True)
+            sprite.position = location
+            self.fading_block_group.add(sprite)
 
             # Above or below
             if hit_block.X + 5 < bx < hit_block.X + hit_block.frame_width - 5:
@@ -233,11 +255,13 @@ class Playing(st.State):
                 self.ball.velocity.y *= -1
 
         self.ball_group.update()
+        self.fading_block_group.update()
 
         # Draw everything
         self.block_group.draw(screen)
         self.ball_group.draw(screen)
         self.paddle_group.draw(screen)
+        self.fading_block_group.draw(screen)
 
     def start_ball(self):
         self.ball.velocity = point.Point(6.0, -8.0)

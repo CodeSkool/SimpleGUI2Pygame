@@ -7,6 +7,10 @@ class ImageLoader:
         try:
             self.image = pygame.image.load(filename)
             self.rect = self.image.get_rect()
+            try:
+                self.image.convert_alpha()
+            except:
+                self.image.convert()
         except pygame.error, message:
             print 'Unable to load image:' + message, filename
             #print message
