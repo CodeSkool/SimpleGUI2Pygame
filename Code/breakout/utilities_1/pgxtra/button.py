@@ -1,6 +1,7 @@
 import pygame
 from pgxtra_widget import PgxtraWidget
 
+
 class Button(PgxtraWidget):
     '''Creates a button on a solid colored rectangular background.
         Attributes:
@@ -118,19 +119,20 @@ class Button(PgxtraWidget):
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 pos = pygame.mouse.get_pos()
                 surface_rect = self.get_surface_rect()
-                if surface_rect <> None and surface_rect.collidepoint(pos):
+                if surface_rect != None and surface_rect.collidepoint(pos):
                     self.mouse_press()
             elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:
                 pos = pygame.mouse.get_pos()
                 surface_rect = self.get_surface_rect()
-                if surface_rect <> None and surface_rect.collidepoint(pos):
+                if surface_rect != None and surface_rect.collidepoint(pos):
                     self.mouse_release()
+
 
 def main():
     ## Basic tests
     pygame.init()
     w = Button("Foo", pygame.Color("blue"),
-        pygame.Color("black"), (0,0), (10,10), lambda: None)
+        pygame.Color("black"), (0, 0), (10, 10), lambda: None)
     print w
 
 if __name__ == '__main__':

@@ -1,13 +1,13 @@
 #!/usr/local/bin/python
 
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 # Name:        pgxtra
 # Purpose:     Provides extra controls for pygame.
 # Author:      Jules
 # Created:     06/29/2013
 # Copyright:   (c) Julie Ann Stoltz 2013
 # Licence:     DBAD (refer to http://www.dbad-license.org/)
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 
 import pygame
 
@@ -20,6 +20,7 @@ LEGAL_KEYS = {pygame.K_q: 'q', pygame.K_w: 'w', pygame.K_e: 'e',
               pygame.K_l: 'l', pygame.K_z: 'z', pygame.K_x: 'x',
               pygame.K_c: 'c', pygame.K_v: 'v', pygame.K_b: 'b',
               pygame.K_n: 'n', pygame.K_m: 'm', pygame.K_SPACE: ' '}
+
 
 def main():
     ## Basic tests

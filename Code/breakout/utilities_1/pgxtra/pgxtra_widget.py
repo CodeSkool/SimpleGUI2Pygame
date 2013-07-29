@@ -1,8 +1,11 @@
-import pygame, threading
+import pygame
+import threading
 from pgxtra_utility import PGxtraUtility
+
 
 class PgxtraWidget(pygame.sprite.Sprite):
     _pgutility = None
+
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         self.enabled = True
@@ -12,10 +15,14 @@ class PgxtraWidget(pygame.sprite.Sprite):
 
     def pgutility(self):
         """The _pgutility should be the same for all PgxtraWidget objects."""
-        if PgxtraWidget._pgutility == None: # Check for None before locking
-            with threading.Lock(): # Lock the thread while we create the helper
-                if PgxtraWidget._pgutility == None: # Check for None again after locking
-                    PgxtraWidget._pgutility = PGxtraUtility() # Create the helper
+        # Check for None before locking
+        if PgxtraWidget._pgutility == None:
+            # Lock the thread while we create the helper
+            with threading.Lock():
+                # Check for None again after locking
+                if PgxtraWidget._pgutility == None:
+                    # Create the helper
+                    PgxtraWidget._pgutility = PGxtraUtility()
         return PgxtraWidget._pgutility
 
     def draw(self):

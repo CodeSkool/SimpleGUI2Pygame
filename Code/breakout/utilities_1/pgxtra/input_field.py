@@ -2,6 +2,7 @@ import pygame
 from pgxtra import LEGAL_KEYS
 from pgxtra_widget import PgxtraWidget
 
+
 class InputField(PgxtraWidget):
     ''' Creates an input field on a solid colored rectangular background.
         Attributes:
@@ -137,14 +138,14 @@ class InputField(PgxtraWidget):
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 pos = pygame.mouse.get_pos()
                 surface_rect = self.get_surface_rect()
-                if surface_rect <> None and surface_rect.collidepoint(pos):
+                if surface_rect != None and surface_rect.collidepoint(pos):
                     self.mouse_press()
                     response = ""
 
             elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:
                 pos = pygame.mouse.get_pos()
                 surface_rect = self.get_surface_rect()
-                if surface_rect <> None and surface_rect.collidepoint(pos):
+                if surface_rect != None and surface_rect.collidepoint(pos):
                     self.mouse_release()
                     if self.enable:
                         fields = self.pgutility().get_widgets(InputField)
@@ -177,10 +178,11 @@ class InputField(PgxtraWidget):
                     if label != response:
                         self.change_label(response)
 
+
 def main():
     ## Basic tests
     pygame.init()
-    w = InputField("Foo", None, None, (0,0), (10,10), lambda: None)
+    w = InputField("Foo", None, None, (0, 0), (10, 10), lambda: None)
     print w
 
 if __name__ == '__main__':

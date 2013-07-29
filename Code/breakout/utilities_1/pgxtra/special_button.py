@@ -1,6 +1,7 @@
 import pygame
 from pgxtra_widget import PgxtraWidget
 
+
 class SpecialButton(PgxtraWidget):
     ''' Creates a button using an image file. Can accept additional button
         images for hovering, pressing, and disabled. To disable a button, call
@@ -8,14 +9,14 @@ class SpecialButton(PgxtraWidget):
 
         Attributes:
             image = image of widget (pre-loaded)
-            screen_position = top left corner where widget will reside on screen
+            screen_position = top left corner position of widget
             btn_size = size of button
             img_pos = top left corner of image segment
             func_call = function that will handle widget event
             offsets = x,y adjustments to img_pos for additional button images
                 (any not provided will default to the normal image)
 
-        If widget is enabled, upon left button press, image will use press image
+        If widget is enabled, on left button press, image will use press image
         (if provided in sprite sheet). Upon left button release, image will
         return to normal, and upon hovering, if provided in sprite sheet, will
         use hover image.
@@ -28,8 +29,8 @@ class SpecialButton(PgxtraWidget):
         '''
 
     def __init__(self, image, screen_position, btn_size, img_pos,
-                 func_call, hover_offset=(0,0), press_offset=(0,0),
-                 disable_offset=(0,0)):
+                 func_call, hover_offset=(0, 0), press_offset=(0, 0),
+                 disable_offset=(0, 0)):
         PgxtraWidget.__init__(self)
         self.image = image
         self.pos = screen_position
@@ -105,18 +106,19 @@ class SpecialButton(PgxtraWidget):
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 pos = pygame.mouse.get_pos()
                 surface_rect = self.get_surface_rect()
-                if surface_rect <> None and surface_rect.collidepoint(pos):
+                if surface_rect != None and surface_rect.collidepoint(pos):
                     self.mouse_press()
             elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:
                 pos = pygame.mouse.get_pos()
                 surface_rect = self.get_surface_rect()
-                if surface_rect <> None and surface_rect.collidepoint(pos):
+                if surface_rect != None and surface_rect.collidepoint(pos):
                     self.mouse_release()
+
 
 def main():
     ## Basic tests
     pygame.init()
-    w = SpecialButton(None, (0,0), (10,10), (0,0), lambda: None)
+    w = SpecialButton(None, (0, 0), (10, 10), (0, 0), lambda: None)
     print w
 
 if __name__ == '__main__':
