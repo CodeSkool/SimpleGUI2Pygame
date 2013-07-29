@@ -1,55 +1,9 @@
 import sys
 import contextlib
 import pygame
-import pgxtra
 
-
-NAVY = pygame.Color(0, 0, 128, 255)
-LTBLUE = pygame.Color(178, 223, 238, 255)
-
-
-def input_or_default(default, input_value=None):
-    if input_value == None:
-        return default
-    return input_value
-
-
-class UIContext:
-    def __init__(self, title=None, width=None, height=None, display_flags=None,
-                 font=None, font_size=None, bg_color=None, fg_color=None,
-                 location=None, size=None, align=None, len_cap=None,
-                 line_width=None):
-        # Window title
-        self.title = input_or_default("", title)
-
-        # Screen resolution width & height
-        self.width = input_or_default(640, width)
-        self.height = input_or_default(480, height)
-
-        # Flags to set display mode, 0 = standard windows mode with frame
-        self.display_flags = input_or_default(0, display_flags)
-
-        # Font type and size. TTF required for packaging as .exe
-        self.font = input_or_default("resources/Comfortaa-Regular.ttf", font)
-        self.font_size = input_or_default(20, font_size)
-
-        # Background and foreground pygame color objects
-        self.bg_color = input_or_default(LTBLUE, bg_color)
-        self.fg_color = input_or_default(NAVY, fg_color)
-
-        # Location and size for objects
-        self.location = input_or_default((0,0), location)
-        self.size = input_or_default((100, 25), size)
-
-        # Alignment for objects, -1 = left, 0 = center, 1 = right
-        self.align = input_or_default(-1, align)
-        assert self.align >= -1 and self.align <= 1, "align must be -1, 0, or 1"
-
-        # Length cap in number of characters, 0 = no cap
-        self.len_cap = input_or_default(0, len_cap)
-
-        # Outline width of drawn objects
-        self.line_width = input_or_default(0, line_width)
+from utilities_1 import pgxtra
+from ui_context import UIContext
 
 
 class UI:
@@ -61,16 +15,16 @@ class UI:
         self.context = input_or_default(UI.default_context, context)
         self.controls = []
         self.transitioning = False
-
-    def start(self):
-        """Initialize pygame, set up the target and run the main game loop
-        (handling events, drawing)."""
         pygame.init()
         self.clock = self.fpsClock = pygame.time.Clock()
 
         self.screen = pygame.display.set_mode((self.context.width,
                                                self.context.height))
         pygame.display.set_caption(self.context.title)
+
+    def start(self):
+        """Set up the target and run the main game loop (handling events,
+        drawing)."""
 
         # set up the target
         self.target.setup()
@@ -125,7 +79,7 @@ class UI:
             self.target.quit()
         finally:
             # always quit, even if there are exceptions
-            quit()
+            quit_all()
 
     def draw_text(self, text, location=None, align=None):
         """Draw the specified text to the screen at the specified location.
@@ -191,7 +145,8 @@ class UI:
         size = input_or_default(self.context.size, size)
         color = input_or_default(self.context.fg_color, color)
 
-        return pygame.draw.rect(self.screen, color, pygame.Rect(location, size))
+        return pygame.draw.rect(self.screen, color, pygame.Rect(location,
+                                                                size))
 
     # this will allow the "with" keyword for context customization
     @contextlib.contextmanager
@@ -209,44 +164,21 @@ class UI:
             self.context = oldcontext
 
 
-def quit():
+def input_or_default(default, input_value=None):
+    if input_value == None:
+        return default
+    return input_value
+
+
+def quit_all():
     """Stop Pygame and exit the program."""
     pygame.quit()
     sys.exit()
-
+    
 
 def main():
-    class tester:
-        def __init__(self):
-            self.ui = UI(self)
-        def update(self, screen):
-            self.ui.draw_text("The quick brown fox jumps over the lazy dog.",
-                              location=(10, 75))
-            screen.lock()
-            self.ui.draw_circle((50, 200), 30)
-            self.ui.draw_rect((50, 300), (60, 60))
-            screen.unlock()
-        def setup(self):
-            self.ui.add_button("New button", self.button_handler)
-            self.ui.add_input("New input", self.button_handler,
-                              location=(10, 40))
-
-        def handle(self, event):
-            pass
-        def button_handler(self, btn):
-            pass
-        def start(self):
-            self.ui.start()
-
-    tester().start()
-    import time
-    time.sleep(30)
-
-    quit()
+    pass
 
 
 if __name__ == '__main__':
-    import doctest
-    results = doctest.testmod()
-    if results[0] == 0:
-        main()
+    main()
