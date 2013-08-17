@@ -54,7 +54,7 @@ class Camera(object):
     def _getheight(self):
         return self.rect.height
     
-    def _setwidth(self, value):
+    def _setheight(self, value):
         self.rect.height = value
         
     height = property(_getheight, _setheight)
